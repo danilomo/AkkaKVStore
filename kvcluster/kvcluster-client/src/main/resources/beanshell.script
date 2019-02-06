@@ -1,0 +1,33 @@
+import akka.actor.Actor;
+import akka.actor.ActorSystem;
+import akka.actor.ActorSelection;
+import akka.actor.Props;
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
+import scala.concurrent.duration.Duration;
+import akka.pattern.PatternsCS;
+import com.emnify.kvcluster.messages.*;
+import akka.util.Timeout;
+
+port = 3000;
+
+Config config = ConfigFactory.parseString( "akka.remote.netty.tcp.port=" + port).withFallback(ConfigFactory.load("client"));
+
+ActorSystem system = ActorSystem.create("kvstore", config);
+
+ActorSelection ref = system.actorSelection("akka.tcp://kvstore@127.0.0.1:2554/user/storageActor");
+
+void put(String k, String v){
+    ref.tell(new PutMessage(k,v), Actor.noSender());
+}
+
+void printContents(){
+    Timeout t = new Timeout(Duration.create(5, TimeUnit.SECONDS));
+
+    CompletableFuture future1 = PatternsCS.ask(ref, "get-contents", 1000).toCompletableFuture();
+
+    String s = future1.get();
+    print(s);
+}
