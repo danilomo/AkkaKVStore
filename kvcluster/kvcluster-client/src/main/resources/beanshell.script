@@ -11,7 +11,7 @@ import akka.pattern.PatternsCS;
 import com.emnify.kvcluster.messages.*;
 import akka.util.Timeout;
 
-port = 3000;
+port = 3001;
 
 Config config = ConfigFactory.parseString( "akka.remote.netty.tcp.port=" + port).withFallback(ConfigFactory.load("client"));
 
@@ -40,9 +40,9 @@ void getp(String key){
 }
 
 void takep(String key){    
-    Timeout t = new Timeout(Duration.create(5, TimeUnit.SECONDS));
+    Timeout t = new Timeout(Duration.create(3600, TimeUnit.SECONDS));
 
-    CompletableFuture future1 = PatternsCS.ask(ref, new TakeMessage(key, 1000), 1000).toCompletableFuture();
+    CompletableFuture future1 = PatternsCS.ask(ref, new TakeMessage(key, 5), t).toCompletableFuture();
 
     Object s = future1.get();
     print(s);

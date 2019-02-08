@@ -74,10 +74,11 @@ public class StorageActor extends AbstractActor {
             ActorRef takeActor = takeActors.get(key);
             if (takeActor == null) {
                 takeActor = context().actorOf(
-                        Props.create(TakeActor.class, key)
+                        Props.create(TakeActor.class, self(), key)
                 );
+                takeActors.put(key, takeActor);
             }
-            takeActor.tell(message, self());
+            takeActor.tell(message, sender());
         }
     }
 

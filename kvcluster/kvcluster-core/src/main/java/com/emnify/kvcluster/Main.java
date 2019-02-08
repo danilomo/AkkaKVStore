@@ -15,6 +15,7 @@ public class Main {
         FrontendMain.main(new String[]{"2552"}); 
         
         Thread.sleep(10000);
+        System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");        
         
         BackendMain.main(new String[]{"2553"});
         BackendMain.main(new String[]{"2554"});
