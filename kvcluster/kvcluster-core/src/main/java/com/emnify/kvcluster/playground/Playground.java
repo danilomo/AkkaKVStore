@@ -1,13 +1,10 @@
 package com.emnify.kvcluster.playground;
 
 import akka.actor.AbstractActor;
-import akka.actor.Actor;
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.actor.Props;
 import akka.routing.ConsistentHashingGroup;
-import akka.routing.ConsistentHashingRouter;
-import com.emnify.kvcluster.playground.Msg;
 import com.emnify.kvcluster.backend.StorageActor;
 import java.util.Arrays;
 import java.util.List;
@@ -53,37 +50,6 @@ public class Playground {
             }
 
         }
-        
-    }
 
-//    static class Msg implements ConsistentHashingRouter.ConsistentHashable{
-//        private String str;
-//
-//        public Msg(String str) {
-//            this.str = str;
-//        }
-//
-//        public String getStr() {
-//            return str;
-//        }
-//
-//        @Override
-//        public int hashCode() {
-//            return str.hashCode();
-//        }
-//
-//        @Override
-//        public boolean equals(Object obj) {
-//            if(obj instanceof Msg){
-//                return ((Msg) obj).str.equals(this.str);
-//            }
-//            
-//            return false;
-//        }  
-//
-//        @Override
-//        public Object consistentHashKey() {
-//            return str;
-//        }
-//    }
+    }
 }

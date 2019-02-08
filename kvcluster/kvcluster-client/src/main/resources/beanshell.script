@@ -17,28 +17,46 @@ Config config = ConfigFactory.parseString( "akka.remote.netty.tcp.port=" + port)
 
 ActorSystem system = ActorSystem.create("kvstore", config);
 
-ActorSelection ref = system.actorSelection("akka.tcp://kvstore@127.0.0.1:2554/user/storageActor");
+ActorSelection ref = system.actorSelection("akka.tcp://kvstore@127.0.0.1:2551/user/frontend");
+
+String[] strs = {"Acre", "Alagoas", "Amapá", "Amazonas", "Bahia", "Ceará", "Distrito Federal", "Espírito Santo", "Goiás", "Maranhão", "Mato Grosso", "Mato Grosso do Sul", "Minas Gerais", "Pará", "Paraíba", "Paraná", "Pernambuco", "Piauí", "Rio de Janeiro", "Rio Grande do Norte", "Rio Grande do Sul", "Rondônia", "Roraima", "Santa Catarina", "São Paulo", "Sergipe", "Tocantins"};
+
+for(int i = 0; i < strs.length; i++){
+    String str = strs[i];
+    ref.tell(new PutMessage(str, str), Actor.noSender());
+}
 
 void put(String k, String v){
     ref.tell(new PutMessage(k,v), Actor.noSender());
 }
 
-void put(String k, String v, int port){
-    ActorSelection ref = system.actorSelection("akka.tcp://kvstore@127.0.0.1:" + port + "/user/storageActor");
-    ref.tell(new PutMessage(k,v), Actor.noSender());
-}
-
-void printContents(){
+void getp(String key){    
     Timeout t = new Timeout(Duration.create(5, TimeUnit.SECONDS));
 
-    CompletableFuture future1 = PatternsCS.ask(ref, "get-contents", 1000).toCompletableFuture();
+    CompletableFuture future1 = PatternsCS.ask(ref, new GetMessage(key), 1000).toCompletableFuture();
 
-    String s = future1.get();
+    Object s = future1.get();
     print(s);
 }
 
+void takep(String key){    
+    Timeout t = new Timeout(Duration.create(5, TimeUnit.SECONDS));
+
+    CompletableFuture future1 = PatternsCS.ask(ref, new TakeMessage(key, 1000), 1000).toCompletableFuture();
+
+    Object s = future1.get();
+    print(s);
+}
+
+void printContents(){
+    printContents(2553);
+    printContents(2554);
+    printContents(2555);
+    printContents(2556);
+}
+
 void printContents(int port){
-    ActorSelection ref = system.actorSelection("akka.tcp://kvstore@127.0.0.1:" + port + "/user/storageActor");
+    ActorSelection ref = system.actorSelection("akka.tcp://kvstore@127.0.0.1:" + port + "/user/storage");
     Timeout t = new Timeout(Duration.create(5, TimeUnit.SECONDS));
 
     CompletableFuture future1 = PatternsCS.ask(ref, "get-contents", 1000).toCompletableFuture();

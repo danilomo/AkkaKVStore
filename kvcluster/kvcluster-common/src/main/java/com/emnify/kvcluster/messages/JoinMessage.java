@@ -1,6 +1,7 @@
 package com.emnify.kvcluster.messages;
 
 import akka.actor.ActorRef;
+import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -17,5 +18,6 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(callSuper = false)
 @ToString
 public class JoinMessage extends Message {
-    private final ActorRef reference;
+    private final UUID uuid;
+    private final ActorRef actor;
 }

@@ -1,4 +1,4 @@
-package com.emnify.kvcluster.playground;
+package com.emnify.kvcluster.client;
 
 import bsh.EvalError;
 import bsh.Interpreter;
