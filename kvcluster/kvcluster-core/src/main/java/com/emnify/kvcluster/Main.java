@@ -8,17 +8,18 @@ import com.emnify.kvcluster.frontend.FrontendMain;
  * @author Danilo Oliveira
  */
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         
         // TEST
         FrontendMain.main(new String[]{"2551"});
-        FrontendMain.main(new String[]{"2552"});
-        FrontendMain.main(new String[]{"2553"});    
+        FrontendMain.main(new String[]{"2552"}); 
         
+        Thread.sleep(10000);
+        
+        BackendMain.main(new String[]{"2553"});
         BackendMain.main(new String[]{"2554"});
-        BackendMain.main(new String[]{"2555"});
-        BackendMain.main(new String[]{"2556"});    
-        BackendMain.main(new String[]{"2557"});
+        BackendMain.main(new String[]{"2555"});    
+        BackendMain.main(new String[]{"2556"});
         
         if(true){
             return;

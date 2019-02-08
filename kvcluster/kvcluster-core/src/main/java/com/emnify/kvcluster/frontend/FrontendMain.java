@@ -1,6 +1,7 @@
 package com.emnify.kvcluster.frontend;
 
 import akka.actor.ActorSystem;
+import akka.actor.Props;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import java.util.Arrays;
@@ -31,5 +32,6 @@ public class FrontendMain {
                 .withFallback(ConfigFactory.load("frontend"));
 
         ActorSystem system = ActorSystem.create("kvstore", config);
+        system.actorOf(Props.create(FrontendActor.class), "frontend");
     }
 }

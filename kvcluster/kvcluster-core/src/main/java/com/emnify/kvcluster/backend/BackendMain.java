@@ -4,6 +4,8 @@ import akka.actor.ActorSystem;
 import akka.actor.Props;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -26,8 +28,14 @@ public class BackendMain {
         Config config = ConfigFactory.parseString(
                 "akka.remote.netty.tcp.port=" + port)
                 .withFallback(ConfigFactory.load("backend"));
+        
+        List<String> list = config
+                .getStringList("akka.cluster.seed-nodes")
+                .stream()
+                .map(str -> str + "/user/frontend")
+                .collect(Collectors.toList());
 
         ActorSystem system = ActorSystem.create("kvstore", config);
-        system.actorOf(Props.create(StorageActor.class), "storageActor");
+        system.actorOf(Props.create(StorageActor.class, list), "storage");
     }
 }

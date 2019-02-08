@@ -23,7 +23,22 @@ void put(String k, String v){
     ref.tell(new PutMessage(k,v), Actor.noSender());
 }
 
+void put(String k, String v, int port){
+    ActorSelection ref = system.actorSelection("akka.tcp://kvstore@127.0.0.1:" + port + "/user/storageActor");
+    ref.tell(new PutMessage(k,v), Actor.noSender());
+}
+
 void printContents(){
+    Timeout t = new Timeout(Duration.create(5, TimeUnit.SECONDS));
+
+    CompletableFuture future1 = PatternsCS.ask(ref, "get-contents", 1000).toCompletableFuture();
+
+    String s = future1.get();
+    print(s);
+}
+
+void printContents(int port){
+    ActorSelection ref = system.actorSelection("akka.tcp://kvstore@127.0.0.1:" + port + "/user/storageActor");
     Timeout t = new Timeout(Duration.create(5, TimeUnit.SECONDS));
 
     CompletableFuture future1 = PatternsCS.ask(ref, "get-contents", 1000).toCompletableFuture();

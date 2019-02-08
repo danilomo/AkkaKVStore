@@ -3,7 +3,6 @@ package com.emnify.kvcluster.client;
 import akka.actor.Actor;
 import akka.actor.ActorSelection;
 import akka.actor.ActorSystem;
-import akka.pattern.Patterns;
 import akka.util.Timeout;
 import com.emnify.kvcluster.messages.PutMessage;
 import com.typesafe.config.Config;
@@ -13,7 +12,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import scala.concurrent.duration.Duration;
 import static akka.pattern.PatternsCS.ask;
-import static akka.pattern.PatternsCS.pipe;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -33,7 +31,7 @@ public class Main {
         ActorSystem system = ActorSystem.create("kvstore", config);
 
         ActorSelection ref = system.
-                actorSelection("akka.tcp://kvstore@127.0.0.1:2554/user/storageActor");
+                actorSelection("akka.tcp://kvstore@127.0.0.1:2557/user/storageActor");
         
         Thread.sleep(10000);
         System.out.println("Enviando mensagens.");
