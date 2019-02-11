@@ -1,11 +1,13 @@
 package com.emnify.kvcluster.backend;
 
+import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.actor.Props;
+import akka.routing.BroadcastGroup;
+import com.emnify.kvcluster.actors.StopNodeActor;
+import com.emnify.kvcluster.api.FrontendRefBuilder;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  *
@@ -28,14 +30,17 @@ public class BackendMain {
         Config config = ConfigFactory.parseString(
                 "akka.remote.netty.tcp.port=" + port)
                 .withFallback(ConfigFactory.load("backend"));
-        
-        List<String> list = config
-                .getStringList("akka.cluster.seed-nodes")
-                .stream()
-                .map(str -> str + "/user/frontend")
-                .collect(Collectors.toList());
 
         ActorSystem system = ActorSystem.create("kvstore", config);
-        system.actorOf(Props.create(StorageActor.class, list), "storage");
+
+        ActorRef frontend = new FrontendRefBuilder(system)
+                .withConfig(config)
+                .withName("frontend")
+                .withStringList("akka.cluster.seed-nodes", s -> s + "/user/frontend")
+                .withGroup(paths -> new BroadcastGroup(paths))                
+                .build();
+
+        system.actorOf(Props.create(StorageActor.class, frontend), "storage");
+        system.actorOf(Props.create(StopNodeActor.class), "stop");
     }
 }

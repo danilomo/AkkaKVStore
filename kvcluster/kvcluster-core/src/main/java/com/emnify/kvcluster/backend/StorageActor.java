@@ -3,11 +3,9 @@ package com.emnify.kvcluster.backend;
 import akka.actor.AbstractActor;
 import akka.actor.ActorRef;
 import akka.actor.Props;
-import akka.routing.BroadcastGroup;
 import java.util.HashMap;
 import java.util.Map;
 import com.emnify.kvcluster.messages.*;
-import java.util.List;
 import java.util.UUID;
 
 /**
@@ -17,20 +15,18 @@ import java.util.UUID;
 public class StorageActor extends AbstractActor {
 
     private final Map<String, String> map = new HashMap<>();
-    private final List<String> paths;
+    private final ActorRef frontend;
     private final Map<String, ActorRef> takeActors = new HashMap<>();
     private UUID uuid;
 
-    public StorageActor(List<String> paths) {
-        this.paths = paths;
+    public StorageActor(ActorRef frontend) {
+        this.frontend = frontend;
     }
 
     @Override
     public void preStart() {
         uuid = UUID.randomUUID();
-        ActorRef router
-                = getContext().actorOf(new BroadcastGroup(paths).props(), "router");
-        router.tell(new JoinMessage(uuid, self()), self());
+        frontend.tell(new JoinMessage(uuid, self()), self());
     }
 
     @Override
@@ -67,7 +63,7 @@ public class StorageActor extends AbstractActor {
         String key = message.key();
 
         if (map.containsKey(key)) {
-            Message response = new EntryMessage<>(map.get(key));
+            Message response = new EntryMessage<>("%%%" + map.get(key));
             map.remove(key);
             sender().tell(response, self());
         } else {

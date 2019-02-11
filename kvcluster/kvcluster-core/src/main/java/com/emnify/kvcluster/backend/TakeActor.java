@@ -23,7 +23,7 @@ public class TakeActor extends AbstractActor {
     private final Queue<ActorRef> receivers;
     private final String key;
 
-    public TakeActor(ActorRef parent, String key) {
+     public TakeActor(ActorRef parent, String key) {
         this.parent = parent;
         this.receivers = new LinkedList<>();
         this.key = key;
@@ -38,22 +38,15 @@ public class TakeActor extends AbstractActor {
                 .build();
     }
 
-    @Override
-    public void preStart() throws Exception {
-        CustomLogger.println("Fui instanciado.");
-    }
-    
-    
-
-    private void putMessage(PutMessage<String, String> message) {
-        CustomLogger.println("Recebi uma mensagem de put, ja posso ir embora.");
+    private void putMessage(PutMessage<String, String> message) {        
         ActorRef receiver = receivers.poll();
-        receiver.tell(new EntryMessage<>(message.value()), Actor.noSender());
+        receiver.tell(new EntryMessage<>( "***" + message.value()), Actor.noSender());
 
         unregisterAndStopIfEmpty();
     }
 
     private void takeMessage(TakeMessage<String> message) {
+        CustomLogger.println("Recebeu take: " + message);
         receivers.add(sender());
 
         Scheduler scheduler = context().system().scheduler();
@@ -66,8 +59,7 @@ public class TakeActor extends AbstractActor {
         );
     }
 
-    private void timeoutMessage(TaketimeoutMessage msg) {
-        CustomLogger.println("Chegou timeout.");
+    private void timeoutMessage(TaketimeoutMessage msg) {        
         ActorRef receiver = msg.actor();
         receiver.tell(new TimeoutMessage(), Actor.noSender());
         receivers.remove(receiver);

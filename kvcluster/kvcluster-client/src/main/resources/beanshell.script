@@ -11,7 +11,7 @@ import akka.pattern.PatternsCS;
 import com.emnify.kvcluster.messages.*;
 import akka.util.Timeout;
 
-port = 3001;
+port = 3002;
 
 Config config = ConfigFactory.parseString( "akka.remote.netty.tcp.port=" + port).withFallback(ConfigFactory.load("client"));
 
@@ -19,12 +19,14 @@ ActorSystem system = ActorSystem.create("kvstore", config);
 
 ActorSelection ref = system.actorSelection("akka.tcp://kvstore@127.0.0.1:2551/user/frontend");
 
+/*
 String[] strs = {"Acre", "Alagoas", "Amapá", "Amazonas", "Bahia", "Ceará", "Distrito Federal", "Espírito Santo", "Goiás", "Maranhão", "Mato Grosso", "Mato Grosso do Sul", "Minas Gerais", "Pará", "Paraíba", "Paraná", "Pernambuco", "Piauí", "Rio de Janeiro", "Rio Grande do Norte", "Rio Grande do Sul", "Rondônia", "Roraima", "Santa Catarina", "São Paulo", "Sergipe", "Tocantins"};
 
 for(int i = 0; i < strs.length; i++){
     String str = strs[i];
     ref.tell(new PutMessage(str, str), Actor.noSender());
 }
+*/
 
 void put(String k, String v){
     ref.tell(new PutMessage(k,v), Actor.noSender());
@@ -63,4 +65,9 @@ void printContents(int port){
 
     String s = future1.get();
     print(s);
+}
+
+void stopNode(int port){
+    ActorSelection ref = system.actorSelection("akka.tcp://kvstore@127.0.0.1:" + port + "/user/stop");
+    ref.tell( new StopNodeMessage(), Actor.noSender() );
 }
