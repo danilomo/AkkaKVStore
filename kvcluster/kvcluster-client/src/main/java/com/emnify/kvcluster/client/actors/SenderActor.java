@@ -71,23 +71,4 @@ public class SenderActor extends AbstractActor {
     private static class SendMessage {
     }
     private static final SendMessage SEND_MESSAGE = new SendMessage();
-
-    public static class CounterGenerator implements StringGenerator {
-
-        private final String base;
-        private int counter;
-
-        public CounterGenerator(String base) {
-            this.base = base;
-            this.counter = 1;
-        }
-
-        @Override
-        public String generate() {
-            String result = base + "_" + counter;
-            counter++;
-            return result;
-        }
-
-    }
 }

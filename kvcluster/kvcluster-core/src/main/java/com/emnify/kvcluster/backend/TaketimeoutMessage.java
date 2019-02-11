@@ -9,7 +9,7 @@ import akka.actor.ActorRef;
 
 /**
  *
- * @author danilo
+ * @author Danilo Oliveira
  */
 public class TaketimeoutMessage {
     private final ActorRef actor;

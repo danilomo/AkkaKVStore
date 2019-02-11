@@ -5,7 +5,7 @@ import java.io.IOException;
 
 /**
  *
- * @author danilo
+ * @author Danilo Oliveira
  */
 public class CustomLogger {
 

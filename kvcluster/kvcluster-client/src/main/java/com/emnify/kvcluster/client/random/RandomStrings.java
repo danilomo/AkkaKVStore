@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 /**
  *
- * @author danilo
+ * @author Danilo Oliveira
  */
 public class RandomStrings {
 

@@ -6,7 +6,7 @@ import java.util.Random;
 
 /**
  *
- * @author danilo
+ * @author Danilo Oliveira
  */
 public class RandomStringFromList implements StringGenerator{
     private final List<String> list;

@@ -2,7 +2,7 @@ package com.emnify.kvcluster.api;
 
 /**
  *
- * @author danilo
+ * @author Danilo Oliveira
  */
 @FunctionalInterface
 public interface HashFunction {

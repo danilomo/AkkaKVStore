@@ -5,7 +5,7 @@ import java.util.stream.IntStream;
 
 /**
  *
- * @author danilo
+ * @author Danilo Oliveira
  */
 public class ExponentialGenerator implements RandomGenerator {
     private final double lambda;
