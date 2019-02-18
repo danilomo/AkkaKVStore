@@ -3,6 +3,7 @@ package com.emnify.kvcluster.client.actors;
 import com.emnify.kvcluster.client.random.ExponentialGenerator;
 import akka.actor.AbstractActor;
 import akka.actor.ActorRef;
+import akka.actor.Cancellable;
 import akka.actor.Scheduler;
 import com.emnify.kvcluster.client.random.RandomGenerator;
 import com.emnify.kvcluster.client.random.RandomStringFromList;
@@ -24,12 +25,27 @@ public class SenderActor extends AbstractActor {
     private boolean stopped;
     private final StringGenerator keyGenerator;
     private final StringGenerator valueGenerator;
+    private final long maxMessages;
+    private long messagesSent = 0;
+    private Cancellable event = Cancellable.alreadyCancelled();
 
     public SenderActor(ActorRef frontend, double rate) {
         generator = new ExponentialGenerator(rate);
         this.frontend = frontend;
         this.keyGenerator = new RandomStringFromList(RandomStrings.KEYS);
         this.valueGenerator = new RandomStringFromList(RandomStrings.VALUES);
+        this.maxMessages = Long.MAX_VALUE;
+    }
+
+    public SenderActor(ActorRef frontend, RandomGenerator generator,
+            StringGenerator keyGenerator, StringGenerator valueGenerator,
+            long maxMessages
+    ) {
+        this.frontend = frontend;
+        this.generator = generator;
+        this.keyGenerator = keyGenerator;
+        this.valueGenerator = valueGenerator;
+        this.maxMessages = maxMessages;
     }
 
     @Override
@@ -40,12 +56,16 @@ public class SenderActor extends AbstractActor {
     @Override
     public Receive createReceive() {
         return receiveBuilder()
-                .match(SendMessage.class, (m) -> sendRandomMessage())
+                .match(SendMessage.class, m -> sendRandomMessage())
+                .match(StopMessage.class, m -> {
+                    event.cancel();
+                    context().stop(self());
+                })
                 .build();
     }
 
     private void sendRandomMessage() {
-        if (stopped) {
+        if (messagesSent >= maxMessages) {
             return;
         }
 
@@ -53,16 +73,17 @@ public class SenderActor extends AbstractActor {
         RequestMessage request = new PutMessage(keyGenerator.generate(), valueGenerator.generate());
         System.out.println(request);
         frontend.tell(request, self());
+        messagesSent++;
     }
 
     private void scheduleNextMessage() {
         scheduler = context().system().scheduler();
         long next = (long) (generator.generate() * 1000);
 
-        scheduler.scheduleOnce(
+        event = scheduler.scheduleOnce(
                 Duration.ofMillis(next),
                 self(),
-                SEND_MESSAGE,
+                SEND,
                 context().dispatcher(),
                 null
         );
@@ -70,5 +91,9 @@ public class SenderActor extends AbstractActor {
 
     private static class SendMessage {
     }
-    private static final SendMessage SEND_MESSAGE = new SendMessage();
+    private static final SendMessage SEND = new SendMessage();
+
+    public static class StopMessage {
+    }
+    public static final StopMessage STOP = new StopMessage();
 }

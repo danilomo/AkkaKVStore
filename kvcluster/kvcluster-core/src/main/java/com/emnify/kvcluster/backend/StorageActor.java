@@ -63,7 +63,7 @@ public class StorageActor extends AbstractActor {
         String key = message.key();
 
         if (map.containsKey(key)) {
-            Message response = new EntryMessage<>("%%%" + map.get(key));
+            Message response = new EntryMessage<>(map.get(key));
             map.remove(key);
             sender().tell(response, self());
         } else {

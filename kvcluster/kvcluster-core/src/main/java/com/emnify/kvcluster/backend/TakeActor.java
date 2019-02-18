@@ -40,7 +40,7 @@ public class TakeActor extends AbstractActor {
 
     private void putMessage(PutMessage<String, String> message) {        
         ActorRef receiver = receivers.poll();
-        receiver.tell(new EntryMessage<>( "***" + message.value()), Actor.noSender());
+        receiver.tell(new EntryMessage<>(message.value()), Actor.noSender());
 
         unregisterAndStopIfEmpty();
     }

@@ -15,6 +15,6 @@ import lombok.experimental.Accessors;
 @Accessors(fluent = true) @Getter
 @EqualsAndHashCode(callSuper=false)
 @ToString
-public class EntryMessage<V> extends RequestMessage{
+public class EntryMessage<V> extends ReplyMessage{
     private final V value;
 }

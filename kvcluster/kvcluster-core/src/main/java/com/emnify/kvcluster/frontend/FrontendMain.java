@@ -3,6 +3,7 @@ package com.emnify.kvcluster.frontend;
 import akka.actor.ActorSystem;
 import akka.actor.Props;
 import com.emnify.kvcluster.actors.StopNodeActor;
+import com.emnify.kvcluster.frontend.FrontendActor;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import java.util.Arrays;

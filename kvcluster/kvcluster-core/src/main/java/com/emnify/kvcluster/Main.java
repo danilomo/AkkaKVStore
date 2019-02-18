@@ -27,8 +27,6 @@ public class Main {
         }
         // TEST
         
-//        args = new String[]{"frontend", "2553"};
-        
         if(args.length < 1){
             errorMain();
         }

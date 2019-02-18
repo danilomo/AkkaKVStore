@@ -6,6 +6,7 @@ import akka.actor.Props;
 import akka.routing.BroadcastGroup;
 import com.emnify.kvcluster.actors.StopNodeActor;
 import com.emnify.kvcluster.api.FrontendRefBuilder;
+import com.emnify.kvcluster.backend.StorageActor;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 
@@ -34,11 +35,11 @@ public class BackendMain {
         ActorSystem system = ActorSystem.create("kvstore", config);
 
         ActorRef frontend = new FrontendRefBuilder(system)
-                .withConfig(config)
-                .withName("frontend")
-                .withStringList("akka.cluster.seed-nodes", s -> s + "/user/frontend")
-                .withGroup(paths -> new BroadcastGroup(paths))                
-                .build();
+            .withConfig(config)
+            .withName("frontend")
+            .withStringList("akka.cluster.seed-nodes", s -> s + "/user/frontend")
+            .withGroup(paths -> new BroadcastGroup(paths))                
+            .build();
 
         system.actorOf(Props.create(StorageActor.class, frontend), "storage");
         system.actorOf(Props.create(StopNodeActor.class), "stop");
