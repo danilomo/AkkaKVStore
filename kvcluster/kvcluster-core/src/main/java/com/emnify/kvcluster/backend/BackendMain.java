@@ -6,7 +6,6 @@ import akka.actor.Props;
 import akka.routing.BroadcastGroup;
 import com.emnify.kvcluster.actors.StopNodeActor;
 import com.emnify.kvcluster.api.FrontendRefBuilder;
-import com.emnify.kvcluster.backend.StorageActor;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 
@@ -17,7 +16,8 @@ import com.typesafe.config.ConfigFactory;
 public class BackendMain {
 
     public static void main(String[] args) {
-        int port = 0;
+        
+        int port = 2551;
 
         if (args.length > 0) {
             try {

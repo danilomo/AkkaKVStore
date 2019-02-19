@@ -45,7 +45,7 @@
                     <archive>
                         <manifest>
                             <mainClass>com.emnify.kvcluster.Main</mainClass>
-                        </manifest>
+                        </manifest>                        
                     </archive>
                 </configuration>
             </plugin>            

@@ -1,2 +1,6 @@
 target/**
 kvcluster/*/target/**
+deployment/.vagrant/*
+*.log
+*.retry
+

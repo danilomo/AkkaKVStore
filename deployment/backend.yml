@@ -1,0 +1,12 @@
+---
+- import_playbook: common.yml
+
+- name: Common tasks for client, frontend, and backend nodes
+  hosts: all
+  become: True
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+#  tasks:
+
+#    - name: Building project
+#      shell: "cd /opt/AkkaKVStore/kvcluster && mvn clean install -Dmaven.test.skip=true"    

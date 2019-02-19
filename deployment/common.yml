@@ -1,0 +1,50 @@
+---
+- hosts: all
+  become: yes
+  become_user: root
+  become_method: sudo
+  gather_facts: False
+  vars:
+    maven_major: 3
+    maven_version: 3.5.4
+    maven_home_parent_directory: /opt
+    maven_env_file: "/etc/profile.d/maven.sh"
+    ansible_python_interpreter: /usr/bin/python3
+  tasks:
+    - name: Install OpenJDK 8
+      apt:
+        name: openjdk-8-jdk
+        state: present
+        update_cache: yes
+    
+    - block:
+      - name: Download and Unarchive maven
+        unarchive:
+          src: "http://www.apache.org/dist/maven/maven-{{ maven_major }}/{{ maven_version }}/binaries/apache-maven-{{ maven_version }}-bin.tar.gz"
+          dest: "{{maven_home_parent_directory}}"
+          copy: no
+
+      - name: Create maven symlink to /usr/bin
+        file:
+          src: "{{maven_home_parent_directory}}/apache-maven-{{maven_version}}/bin/mvn"
+          dest: /usr/bin/mvn
+          state: link
+
+      - name: Configure maven and its environment variables
+        lineinfile:
+          dest: "~/.bashrc"
+          line: "{{ item.line }}"
+          create: yes
+          state: present
+        with_items:
+          - { line: 'M2_HOME={{maven_home_parent_directory}}/apache-maven-{{maven_version}}' }
+          - { line: 'PATH=$PATH:$M2_HOME/bin' }
+
+
+    - name: Clone project from github      
+      git: 
+        repo: https://github.com/danilomo/AkkaKVStore.git
+        dest: /opt/AkkaKVStore
+        
+    - name: Copy frontend.conf to /src/resources/ folder
+      template: src=templates/{{ role }}.conf.j2 dest=/opt/AkkaKVStore/kvcluster/kvcluster-core/src/main/resources/{{ role }}.conf        

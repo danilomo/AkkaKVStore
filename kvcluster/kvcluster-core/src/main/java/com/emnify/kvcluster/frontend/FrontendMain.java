@@ -3,7 +3,6 @@ package com.emnify.kvcluster.frontend;
 import akka.actor.ActorSystem;
 import akka.actor.Props;
 import com.emnify.kvcluster.actors.StopNodeActor;
-import com.emnify.kvcluster.frontend.FrontendActor;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import java.util.Arrays;
@@ -18,7 +17,7 @@ public class FrontendMain {
         
         System.out.println(Arrays.toString(args));
         
-        int port = 0;
+        int port = 2551;
         
         if(args.length > 0){
             try {
