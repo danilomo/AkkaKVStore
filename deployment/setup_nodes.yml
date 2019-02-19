@@ -54,3 +54,6 @@
 
     - name: Copy run_node.sh script to home folder
       template: src=templates/run_node.sh.j2 dest=~/run_node.sh
+
+    - name: Changing perm of ~/run_node.sh, adding "+x"
+      file: dest=~/run_node.sh mode=+x  

@@ -1,2 +1,0 @@
-ansible backend -i $INV -m ping --extra-vars="ansible_python_interpreter=/usr/bin/python3"
-INV=/home/danilo/Workspace/AkkaKVStore/deployment/.vagrant/provisioners/ansible/inventory/vagrant_ansible_inventory
