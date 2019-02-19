@@ -17,7 +17,7 @@ Config config = ConfigFactory.parseString( "akka.remote.netty.tcp.port=" + port)
 
 ActorSystem system = ActorSystem.create("kvstore", config);
 
-ActorSelection ref = system.actorSelection("akka.tcp://kvstore@127.0.0.1:2551/user/frontend");
+ActorSelection ref = system.actorSelection("akka.tcp://kvstore@192.168.1.2:2551/user/frontend");
 
 /*
 String[] strs = {"Acre", "Alagoas", "Amapá", "Amazonas", "Bahia", "Ceará", "Distrito Federal", "Espírito Santo", "Goiás", "Maranhão", "Mato Grosso", "Mato Grosso do Sul", "Minas Gerais", "Pará", "Paraíba", "Paraná", "Pernambuco", "Piauí", "Rio de Janeiro", "Rio Grande do Norte", "Rio Grande do Sul", "Rondônia", "Roraima", "Santa Catarina", "São Paulo", "Sergipe", "Tocantins"};
@@ -58,7 +58,7 @@ void printContents(){
 }
 
 void printContents(int port){
-    ActorSelection ref = system.actorSelection("akka.tcp://kvstore@127.0.0.1:" + port + "/user/storage");
+    ActorSelection ref = system.actorSelection("akka.tcp://kvstore@192.168.1.2:" + port + "/user/storage");
     Timeout t = new Timeout(Duration.create(5, TimeUnit.SECONDS));
 
     CompletableFuture future1 = PatternsCS.ask(ref, "get-contents", 1000).toCompletableFuture();
@@ -68,6 +68,6 @@ void printContents(int port){
 }
 
 void stopNode(int port){
-    ActorSelection ref = system.actorSelection("akka.tcp://kvstore@127.0.0.1:" + port + "/user/stop");
+    ActorSelection ref = system.actorSelection("akka.tcp://kvstore@192.168.1.2:" + port + "/user/stop");
     ref.tell( new StopNodeMessage(), Actor.noSender() );
 }

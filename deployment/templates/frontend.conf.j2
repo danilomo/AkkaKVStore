@@ -14,7 +14,7 @@ akka {
     enabled-transports = ["akka.remote.netty.tcp"]
     log-remote-lifecycle-events = off
     netty.tcp {
-      hostname = {{ host_name }}
+      hostname = {{ host_name }},
       port = 2551
     }
   }

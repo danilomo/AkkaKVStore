@@ -5,9 +5,9 @@ BASE_IP = "192.168.1"
 SENDERS   = 1
 RECEIVERS = 1
 FRONTENDS = 2
-BACKENDS  = 3
+BACKENDS  = 2
 
-seed_nodes = ((1..FRONTENDS).map { |n| "akka.tcp://kvstore@#{BASE_IP}.#{n + 1}:2551" }).join(", ")
+seed_nodes = ((1..FRONTENDS).map { |n| "\"akka.tcp://kvstore@#{BASE_IP}.#{n + 1}:2551\"" }).join(", ")
 
 def configure_virtualbox_vm(vb,name)
   vb.name = name
@@ -19,22 +19,22 @@ Vagrant.configure(VAGRANT_API_VERSION) do |config|
   config.vm.box = "ubuntu/bionic64"
   config.ssh.forward_agent = true
   
-  (1..FRONTENDS).each do |i|
-    config.vm.define "frontend#{i}" do |box|
-      ip = "#{BASE_IP}.#{1 + i}"
-      box.vm.network :private_network, ip: ip
+  (1 .. FRONTENDS + BACKENDS).each do |i|
+    role = if i <= FRONTENDS then "frontend" else "backend" end
+    index = if i <= FRONTENDS then i else i - FRONTENDS end
+    config.vm.define "#{role}_#{index}" do |box|
+      ip = "#{BASE_IP}.#{1 + i}"      
       
+      box.vm.network :private_network, ip: ip      
       box.vm.provider :virtualbox do |vb|
-        configure_virtualbox_vm(vb, "frontend#{i}")
+        configure_virtualbox_vm(vb, "#{role}_#{index}")
       end
       
       box.vm.provision "ansible" do |ansible|
-        ansible.playbook = "frontend.yml"
-        ansible.extra_vars = { seed_nodes: seed_nodes, host_name: ip, role: "frontend" }
+        ansible.playbook = "setup_nodes.yml"
+        ansible.extra_vars = { seed_nodes: seed_nodes, host_name: ip, role: role }
       end      
     end
   end
 
-  (1..BACKENDS).each do |i|
-  end
 end

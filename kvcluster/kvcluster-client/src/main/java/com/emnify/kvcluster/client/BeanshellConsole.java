@@ -33,14 +33,6 @@ public class BeanshellConsole extends javax.swing.JFrame {
             String initScript = readResourceAsFile("beanshell.script");
             interpreter.eval(initScript);
 
-//            for (String line : initScript.split("\n")) {
-//                if (!line.trim().isEmpty()) {
-//                    interpreter.eval(line);
-//                }
-//            }
-
-
-
         } catch (IOException | EvalError ex) {
             Logger.getLogger(BeanshellConsole.class.getName()).log(Level.SEVERE, null, ex);
         }

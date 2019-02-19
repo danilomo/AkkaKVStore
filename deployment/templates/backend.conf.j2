@@ -1,0 +1,28 @@
+akka {
+  actor {
+    provider = "cluster"
+    serializers {
+      proto = "akka.remote.serialization.ProtobufSerializer"
+      java = "akka.serialization.JavaSerializer"
+    }
+    serialization-bindings {
+      "java.lang.String" = java
+      "com.emnify.kvcluster.messages.Message" = java
+    }
+  }
+  remote {
+    enabled-transports = ["akka.remote.netty.tcp"]
+    log-remote-lifecycle-events = off
+    netty.tcp {
+      hostname = {{ host_name }},
+      port = 2551
+    }
+  }
+  cluster {
+    seed-nodes = [ {{ seed_nodes }} ]
+    roles = ["backend"]
+    role = {
+      frontend.min-nr-of-members = 2
+    }
+  }
+}
