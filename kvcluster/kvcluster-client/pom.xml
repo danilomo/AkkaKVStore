@@ -28,6 +28,21 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>com.typesafe.akka</groupId>
+            <artifactId>akka-http_2.12</artifactId>
+            <version>10.1.7</version>
+        </dependency>
+        <dependency>
+            <groupId>com.typesafe.akka</groupId>
+            <artifactId>akka-stream_2.12</artifactId>
+            <version>2.5.19</version> <!-- Or whatever the latest version is -->
+        </dependency>
+        <dependency>
+            <groupId>com.typesafe.akka</groupId>
+            <artifactId>akka-http-jackson_2.12</artifactId>
+            <version>10.1.7</version>
+        </dependency>
+        <dependency>
             <groupId>com.emnify</groupId>
             <artifactId>kvcluster-core</artifactId>
             <version>0.0.1</version>

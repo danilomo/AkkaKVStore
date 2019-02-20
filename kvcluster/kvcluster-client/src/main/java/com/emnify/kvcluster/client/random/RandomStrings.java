@@ -52,7 +52,7 @@ public class RandomStrings {
             + "Bill Clinton\n"
             + "George W. Bush\n"
             + "Barack Hussein Obama\n"
-            + "Donald J. Trump").split("\n");
+            + "Donald J. Trump").replace(" ", "_").split("\n");
 
     public static final String[] VALUES = ("FRom faireſt creatures we defire increaſe, \n"
             + "That thereby beauties Roſe might neuer die, \n"

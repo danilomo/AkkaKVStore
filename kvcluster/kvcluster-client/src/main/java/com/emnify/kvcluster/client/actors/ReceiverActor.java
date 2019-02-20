@@ -7,6 +7,8 @@ import com.emnify.kvcluster.messages.EntryMessage;
 import com.emnify.kvcluster.messages.ReplyMessage;
 import com.emnify.kvcluster.messages.TakeMessage;
 import com.emnify.kvcluster.messages.TimeoutMessage;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.BiConsumer;
 
 /**
@@ -17,20 +19,24 @@ public class ReceiverActor extends AbstractActor {
 
     private final ActorRef frontend;
     private final String key;
+    private List<String> messages;
+
     private BiConsumer<ReplyMessage, ActorRef> consumer = (message, sender) -> {
         CustomLogger.println("Actor " + self() + " got message " + message + " from " + sender);
+        messages.add(message.toString());
     };
 
     public ReceiverActor(String key, ActorRef frontend) {
         this.frontend = frontend;
         this.key = key;
+        messages = new ArrayList<>();
     }
-    
-    public ReceiverActor(String key, 
+
+    public ReceiverActor(String key,
             ActorRef frontend, BiConsumer<ReplyMessage, ActorRef> consumer) {
         this(key, frontend);
         this.consumer = consumer;
-    }    
+    }
 
     @Override
     public void preStart() throws Exception {
@@ -41,7 +47,8 @@ public class ReceiverActor extends AbstractActor {
     public Receive createReceive() {
         return receiveBuilder()
                 .match(TimeoutMessage.class, m -> this.listenForMessage())
-                .match(EntryMessage.class, this::gotMessage )
+                .match(EntryMessage.class, this::gotMessage)
+                .match(GetMessages.class, m -> this.getMessages())
                 .build();
     }
 
@@ -53,4 +60,12 @@ public class ReceiverActor extends AbstractActor {
         consumer.accept(message, sender());
         listenForMessage();
     }
+
+    private void getMessages() {
+        sender().tell(messages, self());
+    }
+
+    public static class GetMessages {
+    }
+    public static GetMessages GET_MESSAGES = new GetMessages();
 }
