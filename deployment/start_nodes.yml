@@ -1,14 +1,18 @@
 ---
-- hosts: "{{ group }}"
+- hosts: "{{ role }}"
   become: yes
   become_user: root
   become_method: sudo
-  gather_facts: False
+  gather_facts: True
   vars:
     ansible_python_interpreter: /usr/bin/python3
-  tasks:
+  tasks:        
+    - name: Copy run_node.sh script to home folder
+      template: src=templates/run_node.sh.j2 dest=~/run_node.sh
+      
     - name: Changing perm of ~/run_node.sh, adding "+x"
-      file: dest=~/run_node.sh mode=+x    
+      file: dest=~/run_node.sh mode=+x
+      
     - name: Run frontend nodes
       shell: ~/run_node.sh
 

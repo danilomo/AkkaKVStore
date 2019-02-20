@@ -3,13 +3,15 @@
   become: yes
   become_user: root
   become_method: sudo
-  gather_facts: False
+  gather_facts: True
   vars:
     maven_major: 3
     maven_version: 3.5.4
     maven_home_parent_directory: /opt
     maven_env_file: "/etc/profile.d/maven.sh"
     ansible_python_interpreter: /usr/bin/python3
+    role: "{{ ansible_group }}"
+    host_name: "{{ hostvars[inventory_hostname]['ansible_facts']['all_ipv4_addresses'] | sort | last }}"
   tasks:
     - name: Install OpenJDK 8
       apt:
@@ -46,14 +48,20 @@
         repo: https://github.com/danilomo/AkkaKVStore.git
         dest: /opt/AkkaKVStore
         
+    #- name: Copy frontend.conf to /src/resources/ folder
+    #  template: src=templates/{{ role }}.conf.j2 dest=/opt/AkkaKVStore/kvcluster/kvcluster-core/src/main/resources/{{ role }}.conf
+
     - name: Copy frontend.conf to /src/resources/ folder
-      template: src=templates/{{ role }}.conf.j2 dest=/opt/AkkaKVStore/kvcluster/kvcluster-core/src/main/resources/{{ role }}.conf        
+      template: src=templates/frontend.conf.j2 dest=/opt/AkkaKVStore/kvcluster/kvcluster-core/src/main/resources/frontend.conf
+
+    - name: Copy backend.conf to /src/resources/ folder
+      template: src=templates/backend.conf.j2 dest=/opt/AkkaKVStore/kvcluster/kvcluster-core/src/main/resources/backend.conf    
 
     - name: Building project
       shell: "cd /opt/AkkaKVStore/kvcluster && mvn clean install -Dmaven.test.skip=true"
 
-    - name: Copy run_node.sh script to home folder
-      template: src=templates/run_node.sh.j2 dest=~/run_node.sh
+    #- name: Copy run_node.sh script to home folder
+    #  template: src=templates/run_node.sh.j2 dest=~/run_node.sh
 
-    - name: Changing perm of ~/run_node.sh, adding "+x"
-      file: dest=~/run_node.sh mode=+x  
+    #- name: Changing perm of ~/run_node.sh, adding "+x"
+    #  file: dest=~/run_node.sh mode=+x  

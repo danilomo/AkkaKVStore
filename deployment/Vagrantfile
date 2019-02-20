@@ -8,33 +8,52 @@ FRONTENDS = 2
 BACKENDS  = 2
 
 seed_nodes = ((1..FRONTENDS).map { |n| "\"akka.tcp://kvstore@#{BASE_IP}.#{n + 1}:2551\"" }).join(", ")
+groups = { "backend" => [], "frontend" => [] }
 
 def configure_virtualbox_vm(vb,name)
   vb.name = name
-  vb.memory = 1024
+  vb.memory = 512
   vb.cpus = 1
+end
+
+def list_of_nodes()
+  indexes = (1..(FRONTENDS+BACKENDS)).to_a  
+  sufixes = [ (1 .. FRONTENDS).to_a, (1 .. BACKENDS).to_a ].flatten
+  roles   = [ ["frontend"] * FRONTENDS, ["backend"] * BACKENDS ].flatten
+
+  indexes.zip( sufixes, roles )
+end
+
+def last_node(i)
+  i == list_of_nodes().length
 end
 
 Vagrant.configure(VAGRANT_API_VERSION) do |config|
   config.vm.box = "ubuntu/bionic64"
   config.ssh.forward_agent = true
-  
-  (1 .. FRONTENDS + BACKENDS).each do |i|
-    role = if i <= FRONTENDS then "frontend" else "backend" end
-    index = if i <= FRONTENDS then i else i - FRONTENDS end
-    config.vm.define "#{role}_#{index}" do |box|
-      ip = "#{BASE_IP}.#{1 + i}"      
-      
-      box.vm.network :private_network, ip: ip      
-      box.vm.provider :virtualbox do |vb|
-        configure_virtualbox_vm(vb, "#{role}_#{index}")
-      end
-      
-      box.vm.provision "ansible" do |ansible|
-        ansible.playbook = "setup_nodes.yml"
-        ansible.extra_vars = { seed_nodes: seed_nodes, host_name: ip, role: role }
-      end      
-    end
-  end
 
+  list_of_nodes().each do |node|
+    (i, sufix, role) = node
+    ip_address = "#{BASE_IP}.#{1 + i}"
+    name = "#{role}_#{sufix}"
+
+    groups[role].append(name)
+
+    config.vm.define name do |box|
+      box.vm.network :private_network, ip: ip_address      
+      box.vm.provider :virtualbox do |vb|
+        configure_virtualbox_vm(vb, name)
+      end
+
+      if last_node(i)
+        box.vm.provision "ansible" do |ansible|
+          ansible.limit = 'all'
+          ansible.playbook = "setup_nodes.yml"
+          ansible.extra_vars = { seed_nodes: seed_nodes }#, host_name: ip_address, role: role }
+          ansible.groups = groups
+        end        
+      end
+    end    
+  end
 end
+

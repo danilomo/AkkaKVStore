@@ -12,7 +12,7 @@ import com.emnify.kvcluster.client.random.StringGenerator;
 import com.emnify.kvcluster.frontend.FrontendActor;
 import com.emnify.kvcluster.messages.ReplyMessage;
 import java.time.Duration;
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -47,7 +47,7 @@ public class ReceiverActorTest {
     public void testReceive10Messages() {
         new TestKit(system) {
             {
-                Consumer<ReplyMessage> consumer = message -> {
+                BiConsumer<ReplyMessage, ActorRef> consumer = (message, ref) -> {
                     getRef().tell(message, ActorRef.noSender());
                 };
                 
