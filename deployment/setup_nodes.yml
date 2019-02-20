@@ -42,26 +42,19 @@
           - { line: 'M2_HOME={{maven_home_parent_directory}}/apache-maven-{{maven_version}}' }
           - { line: 'PATH=$PATH:$M2_HOME/bin' }
 
-
     - name: Clone project from github      
       git: 
         repo: https://github.com/danilomo/AkkaKVStore.git
         dest: /opt/AkkaKVStore
         
-    #- name: Copy frontend.conf to /src/resources/ folder
-    #  template: src=templates/{{ role }}.conf.j2 dest=/opt/AkkaKVStore/kvcluster/kvcluster-core/src/main/resources/{{ role }}.conf
-
     - name: Copy frontend.conf to /src/resources/ folder
       template: src=templates/frontend.conf.j2 dest=/opt/AkkaKVStore/kvcluster/kvcluster-core/src/main/resources/frontend.conf
 
     - name: Copy backend.conf to /src/resources/ folder
       template: src=templates/backend.conf.j2 dest=/opt/AkkaKVStore/kvcluster/kvcluster-core/src/main/resources/backend.conf    
 
+    - name: Copy client.conf to /src/resources/ folder
+      template: src=templates/client.conf.j2 dest=/opt/AkkaKVStore/kvcluster/kvcluster-client/src/main/resources/client.conf 
+    
     - name: Building project
       shell: "cd /opt/AkkaKVStore/kvcluster && mvn clean install -Dmaven.test.skip=true"
-
-    #- name: Copy run_node.sh script to home folder
-    #  template: src=templates/run_node.sh.j2 dest=~/run_node.sh
-
-    #- name: Changing perm of ~/run_node.sh, adding "+x"
-    #  file: dest=~/run_node.sh mode=+x  

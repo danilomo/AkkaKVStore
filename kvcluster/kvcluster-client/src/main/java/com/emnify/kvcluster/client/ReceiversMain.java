@@ -17,8 +17,6 @@ import com.typesafe.config.ConfigFactory;
 public class ReceiversMain {
 
     public static void main(String[] args) {
-        args = new String[]{"10", "3001"};
-
         int receivers = Integer.parseInt(args[0]);
         int port = Integer.parseInt(args[1]);
 

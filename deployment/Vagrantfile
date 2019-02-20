@@ -8,7 +8,7 @@ FRONTENDS = 2
 BACKENDS  = 2
 
 seed_nodes = ((1..FRONTENDS).map { |n| "\"akka.tcp://kvstore@#{BASE_IP}.#{n + 1}:2551\"" }).join(", ")
-groups = { "backend" => [], "frontend" => [] }
+groups = { "backend" => [], "frontend" => [], "sender" => [], "receiver" => [] }
 
 def configure_virtualbox_vm(vb,name)
   vb.name = name
@@ -17,15 +17,14 @@ def configure_virtualbox_vm(vb,name)
 end
 
 def list_of_nodes()
-  indexes = (1..(FRONTENDS+BACKENDS)).to_a  
-  sufixes = [ (1 .. FRONTENDS).to_a, (1 .. BACKENDS).to_a ].flatten
-  roles   = [ ["frontend"] * FRONTENDS, ["backend"] * BACKENDS ].flatten
+  indexes      = (1..(FRONTENDS+BACKENDS+SENDERS+RECEIVERS)).to_a  
+  sufixes      = [ (1 .. FRONTENDS).to_a, (1 .. BACKENDS).to_a, (1 .. SENDERS).to_a, (1 .. RECEIVERS).to_a ].flatten
+  roles        = [ ["frontend"] * FRONTENDS, ["backend"] * BACKENDS, ["sender"] * SENDERS, ["receiver"] * RECEIVERS ].flatten
+  names        = roles.zip(sufixes).map { |item| "#{item[0]}_#{item[1]}" }
+  ip_addresses = indexes.map { |i| "#{BASE_IP}.#{1 + i}" }
+  last_node    = indexes.map { |i| i == indexes.length }
 
-  indexes.zip( sufixes, roles )
-end
-
-def last_node(i)
-  i == list_of_nodes().length
+  names.zip( ip_addresses, roles, last_node )
 end
 
 Vagrant.configure(VAGRANT_API_VERSION) do |config|
@@ -33,10 +32,7 @@ Vagrant.configure(VAGRANT_API_VERSION) do |config|
   config.ssh.forward_agent = true
 
   list_of_nodes().each do |node|
-    (i, sufix, role) = node
-    ip_address = "#{BASE_IP}.#{1 + i}"
-    name = "#{role}_#{sufix}"
-
+    (name, ip_address, role, last_node) = node
     groups[role].append(name)
 
     config.vm.define name do |box|
@@ -45,11 +41,11 @@ Vagrant.configure(VAGRANT_API_VERSION) do |config|
         configure_virtualbox_vm(vb, name)
       end
 
-      if last_node(i)
+      if last_node
         box.vm.provision "ansible" do |ansible|
           ansible.limit = 'all'
           ansible.playbook = "setup_nodes.yml"
-          ansible.extra_vars = { seed_nodes: seed_nodes }#, host_name: ip_address, role: role }
+          ansible.extra_vars = { seed_nodes: seed_nodes }
           ansible.groups = groups
         end        
       end
