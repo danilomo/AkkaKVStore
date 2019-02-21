@@ -30,7 +30,7 @@
     - name: Changing perm of ~/run_receivers.sh, adding "+x"
       file: dest=~/run_receivers.sh mode=+x
       
-    - name: Run receivers
-      shell: ~/run_receivers.sh      
+      #- name: Run receivers
+      #shell: ~/run_receivers.sh      
 
       

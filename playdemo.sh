@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd deployment
+cd deployment 
 
 echo "Starting frontend nodes"
 ansible-playbook start_nodes.yml -e "role=frontend"
