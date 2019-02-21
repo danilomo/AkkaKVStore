@@ -63,6 +63,6 @@ public class ReceiversMain {
         final HTTPApplication app = new HTTPApplication(system);
         final Flow<HttpRequest, HttpResponse, NotUsed> routeFlow = app.createRoute().flow(system, materializer);
         http.bindAndHandle(routeFlow,
-                ConnectHttp.toHost("localhost", 8080), materializer);
+                ConnectHttp.toHost("192.168.1.7", 8080), materializer);
     }
 }
