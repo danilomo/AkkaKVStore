@@ -17,8 +17,6 @@ import java.util.stream.IntStream;
 public class SendersMain {
 
     public static void main(String[] args) {
-        
-        args = new String[]{"10", "0.5", "0"};
                     
         int numberOfSenders = Integer.parseInt(args[0]);
         double rate = Double.parseDouble(args[1]);

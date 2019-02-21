@@ -5,7 +5,6 @@ import akka.actor.Props;
 import com.emnify.kvcluster.actors.StopNodeActor;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
-import java.util.Arrays;
 
 /**
  *
@@ -13,9 +12,7 @@ import java.util.Arrays;
  */
 public class FrontendMain {
 
-    public static void main(String[] args) {
-        
-        System.out.println(Arrays.toString(args));
+    public static void main(String[] args) {                
         
         int port = 2551;
         

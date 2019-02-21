@@ -4,7 +4,6 @@ import akka.actor.AbstractActor;
 import akka.actor.Actor;
 import akka.actor.ActorRef;
 import akka.actor.Scheduler;
-import com.emnify.kvcluster.api.CustomLogger;
 import com.emnify.kvcluster.messages.EntryMessage;
 import com.emnify.kvcluster.messages.PutMessage;
 import com.emnify.kvcluster.messages.TakeMessage;

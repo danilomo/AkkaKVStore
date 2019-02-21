@@ -28,9 +28,7 @@ import akka.stream.javadsl.Flow;
 public class ReceiversMain {
 
     public static void main(String[] args) {
-
-        args = new String[]{"10", "0"};
-
+        
         int receivers = Integer.parseInt(args[0]);
         int port = Integer.parseInt(args[1]);
 

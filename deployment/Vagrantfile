@@ -8,7 +8,21 @@ FRONTENDS = 2
 BACKENDS  = 2
 
 seed_nodes = ((1..FRONTENDS).map { |n| "\"akka.tcp://kvstore@#{BASE_IP}.#{n + 1}:2551\"" }).join(", ")
+
 groups = { "backend" => [], "frontend" => [], "sender" => [], "receiver" => [] }
+
+$SPECIFIC_CONFIG = {
+  "receiver_1" => Proc.new { |box|
+    box.vm.network :forwarded_port, host: 8080, guest: 8080
+  }
+}
+
+$NO_CONFIG = Proc.new { |b| nil }
+
+def apply_specific_config(name, box)
+  block = $SPECIFIC_CONFIG.fetch(name, $NO_CONFIG)
+  block.call(box)
+end
 
 def configure_virtualbox_vm(vb,name)
   vb.name = name
@@ -36,10 +50,12 @@ Vagrant.configure(VAGRANT_API_VERSION) do |config|
     groups[role].append(name)
 
     config.vm.define name do |box|
-      box.vm.network :private_network, ip: ip_address      
+      box.vm.network :private_network, ip: ip_address
+      
       box.vm.provider :virtualbox do |vb|
-        configure_virtualbox_vm(vb, name)
+        configure_virtualbox_vm(vb, name)      
       end
+      apply_specific_config(name, box)       
 
       if last_node
         box.vm.provision "ansible" do |ansible|

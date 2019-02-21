@@ -1,0 +1,36 @@
+---
+- hosts: sender
+  become: yes
+  become_user: root
+  become_method: sudo
+  gather_facts: True
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+  tasks:        
+    - name: Copy run_senders.sh script to home folder
+      template: src=templates/run_senders.sh.j2 dest=~/run_senders.sh
+      
+    - name: Changing perm of ~/run_senders.sh, adding "+x"
+      file: dest=~/run_senders.sh mode=+x
+      
+    - name: Run senders
+      shell: ~/run_senders.sh
+
+- hosts: receiver
+  become: yes
+  become_user: root
+  become_method: sudo
+  gather_facts: True
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+  tasks:        
+    - name: Copy run_receivers.sh script to home folder
+      template: src=templates/run_receivers.sh.j2 dest=~/run_receivers.sh
+      
+    - name: Changing perm of ~/run_receivers.sh, adding "+x"
+      file: dest=~/run_receivers.sh mode=+x
+      
+    - name: Run receivers
+      shell: ~/run_receivers.sh      
+
+      

@@ -18,6 +18,8 @@ public class BackendMain {
     public static void main(String[] args) {
         
         int port = 2551;
+        
+        args = new String[]{"2554"};
 
         if (args.length > 0) {
             try {

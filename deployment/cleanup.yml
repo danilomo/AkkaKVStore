@@ -7,7 +7,7 @@
   vars:
     ansible_python_interpreter: /usr/bin/python3
   tasks:
-    - name: Ansible remove file glob
+    - name: Make sure the cloned project is absent to avoid problems with the git task
       file:
         path: /opt/AkkaKVStore
         state: absent

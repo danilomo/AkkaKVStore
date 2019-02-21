@@ -42,6 +42,11 @@
           - { line: 'M2_HOME={{maven_home_parent_directory}}/apache-maven-{{maven_version}}' }
           - { line: 'PATH=$PATH:$M2_HOME/bin' }
 
+    - name: Remove the project folder, if existing
+      file:
+        path: /opt/AkkaKVStore
+        state: absent
+        
     - name: Clone project from github      
       git: 
         repo: https://github.com/danilomo/AkkaKVStore.git
