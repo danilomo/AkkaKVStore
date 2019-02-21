@@ -21,9 +21,8 @@ public class ReceiverActor extends AbstractActor {
     private final String key;
     private List<String> messages;
 
-    private BiConsumer<ReplyMessage, ActorRef> consumer = (message, sender) -> {
-        CustomLogger.println("Actor " + self() + " got message " + message + " from " + sender);
-        messages.add(message.toString());
+    private BiConsumer<ReplyMessage, ActorRef> consumer = (message, sender) -> {        
+        messages.add("<" + message + ", " + sender + ">");
     };
 
     public ReceiverActor(String key, ActorRef frontend) {

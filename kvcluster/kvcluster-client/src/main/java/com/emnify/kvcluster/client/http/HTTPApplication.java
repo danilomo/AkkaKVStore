@@ -13,6 +13,9 @@ import java.util.concurrent.CompletableFuture;
 import akka.http.javadsl.marshallers.jackson.Jackson;
 import akka.http.javadsl.model.StatusCodes;
 import static com.emnify.kvcluster.client.actors.ReceiverActor.GET_MESSAGES;
+import com.emnify.kvcluster.client.random.RandomStrings;
+import java.util.Arrays;
+import static java.util.stream.Collectors.toList;
 
 /**
  *
@@ -27,35 +30,69 @@ public class HTTPApplication extends AllDirectives {
     }
 
     public Route createRoute() {
-        return get(
-                () -> pathPrefix(
-                        "keys",
-                        () -> path(
-                                PathMatchers.segment(),
-                                (String key) -> {
-                                    return onSuccess(getReceivedMessages(key), (t) -> {
-                                        return complete(StatusCodes.OK, t, Jackson.<List>marshaller());
-                                    });
-                                }
-                        )
+        Route getKey = get(
+            () -> pathPrefix(
+                "key",
+                () -> path(
+                    PathMatchers.segment(),
+                    (String key) -> {
+                        return onSuccess(getMessagesByKey(key), (t) -> {
+                            return complete(StatusCodes.OK, t, Jackson.<List>marshaller());
+                        });
+                    }
                 )
+            )
         );
+
+        Route allKeys = get(
+            () -> path(
+                "keys",
+                () -> {
+                    return onSuccess(
+                        getAllMessages(), 
+                        (t) -> complete(StatusCodes.OK, t, Jackson.<List>marshaller())
+                    );
+                }
+            )
+        );
+
+        return concat(getKey, allKeys);
     }
 
-    private CompletableFuture<List<String>> getReceivedMessages(String key) {
+    private CompletableFuture<List<String>> getMessagesByKey(String key) {
         ActorSelection selection = system.actorSelection("/user/" + key);
+        
         CompletableFuture<Object> future = ask(
                 selection,
                 GET_MESSAGES,
                 Duration.ofMillis(1000)
-        ).toCompletableFuture();
+        ).toCompletableFuture().exceptionally((t) -> new ArrayList<>() );
 
         return future.thenCompose(obj -> {
             if (obj instanceof List) {
                 return CompletableFuture.supplyAsync(() -> (List<String>) obj);
-            }else {
+            } else {
                 return CompletableFuture.supplyAsync(() -> (List<String>) new ArrayList<String>());
-            }            
+            }
         });
+    }
+
+    private CompletableFuture<List<List<String>>> getAllMessages() {
+        List<String> keys = Arrays.asList(RandomStrings.KEYS);
+        
+        List<CompletableFuture<List<String>>> futures = keys
+                .stream()
+                .map( key -> getMessagesByKey(key) )
+                .collect(toList());
+        
+        return sequence(futures);
+    }
+
+    static <T> CompletableFuture<List<T>> sequence(List<CompletableFuture<T>> com) {
+        return CompletableFuture.allOf(com.toArray(new CompletableFuture<?>[com.size()]))
+                .thenApply(v -> com.stream()
+                .map(CompletableFuture::join)
+                .collect(toList())
+                );
     }
 }
