@@ -2,12 +2,13 @@ package com.emnify.test.random;
 
 import com.emnify.kvcluster.client.random.RandomStringFromList;
 import com.emnify.kvcluster.client.random.StringGenerator;
-import java.util.stream.IntStream;
-import static org.junit.Assert.*;
 import org.junit.Test;
 
+import java.util.stream.IntStream;
+
+import static org.junit.Assert.assertTrue;
+
 /**
- *
  * @author Danilo Oliveira
  */
 public class TestRandomStringGenerator {

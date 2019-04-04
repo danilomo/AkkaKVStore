@@ -3,13 +3,13 @@ package com.emnify.kvcluster.backend;
 import akka.actor.AbstractActor;
 import akka.actor.ActorRef;
 import akka.actor.Props;
+import com.emnify.kvcluster.messages.*;
+
 import java.util.HashMap;
 import java.util.Map;
-import com.emnify.kvcluster.messages.*;
 import java.util.UUID;
 
 /**
- *
  * @author Danilo Oliveira
  */
 public class StorageActor extends AbstractActor {
@@ -32,19 +32,19 @@ public class StorageActor extends AbstractActor {
     @Override
     public Receive createReceive() {
         return receiveBuilder()
-                .match(GetMessage.class, this::getMessage)
-                .match(PutMessage.class, this::putMessage)
-                .match(TakeMessage.class, this::takeMessage)
-                .match(UnregisterMessage.class, this::unregisterMessage)
-                .match(String.class, message -> message.equals("get-contents"), s -> getContents())
-                .build();
+            .match(GetMessage.class, this::getMessage)
+            .match(PutMessage.class, this::putMessage)
+            .match(TakeMessage.class, this::takeMessage)
+            .match(UnregisterMessage.class, this::unregisterMessage)
+            .match(String.class, message -> message.equals("get-contents"), s -> getContents())
+            .build();
     }
 
     private void getMessage(GetMessage<String> message) {
         String key = message.key();
         sender().tell(
-                map.containsKey(key) ? new EntryMessage<>(map.get(key)) : new KeyAbsentMessage(),
-                self()
+            map.containsKey(key) ? new EntryMessage<>(map.get(key)) : new KeyAbsentMessage(),
+            self()
         );
     }
 
@@ -70,9 +70,11 @@ public class StorageActor extends AbstractActor {
             ActorRef takeActor = takeActors.get(key);
             if (takeActor == null) {
                 takeActor = context().actorOf(
-                        Props.create(TakeActor.class, self(), key)
+                    Props.create(TakeActor.class, self(), key)
                 );
                 takeActors.put(key, takeActor);
+
+                Props.create(TakeActor.class);
             }
             takeActor.tell(message, sender());
         }

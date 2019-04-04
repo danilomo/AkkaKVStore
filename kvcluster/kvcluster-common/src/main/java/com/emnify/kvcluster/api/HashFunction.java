@@ -1,7 +1,6 @@
 package com.emnify.kvcluster.api;
 
 /**
- *
  * @author Danilo Oliveira
  */
 @FunctionalInterface

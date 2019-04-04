@@ -6,17 +6,12 @@ import akka.actor.ActorSystem;
 import akka.actor.Props;
 import akka.testkit.javadsl.TestKit;
 import com.emnify.kvcluster.backend.StorageActor;
-import com.emnify.kvcluster.messages.EntryMessage;
-import com.emnify.kvcluster.messages.GetMessage;
-import com.emnify.kvcluster.messages.JoinMessage;
-import com.emnify.kvcluster.messages.KeyAbsentMessage;
-import com.emnify.kvcluster.messages.PutMessage;
+import com.emnify.kvcluster.messages.*;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- *
  * @author Danilo Oliveira
  */
 public class StorageActorTest {
@@ -45,7 +40,7 @@ public class StorageActorTest {
             }
         };
     }
-    
+
     @Test
     public void testGetNotExists() {
         new TestKit(system) {
@@ -56,7 +51,7 @@ public class StorageActorTest {
                 expectMsgClass(KeyAbsentMessage.class);
             }
         };
-    }    
+    }
 
     @Test
     public void testJoin() {
@@ -74,8 +69,8 @@ public class StorageActorTest {
 
     private ActorRef createStorageActor(String name, ActorRef frontend) {
         return system.actorOf(
-                Props.create(StorageActor.class, frontend),
-                name
+            Props.create(StorageActor.class, frontend),
+            name
         );
     }
 

@@ -5,10 +5,9 @@ import java.util.List;
 import java.util.Random;
 
 /**
- *
  * @author Danilo Oliveira
  */
-public class RandomStringFromList implements StringGenerator{
+public class RandomStringFromList implements StringGenerator {
     private final List<String> list;
     private final Random random;
 
@@ -26,5 +25,5 @@ public class RandomStringFromList implements StringGenerator{
         int position = random.nextInt(list.size());
         return list.get(position);
     }
-    
+
 }

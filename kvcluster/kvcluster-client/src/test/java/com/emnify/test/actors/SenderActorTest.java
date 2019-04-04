@@ -10,13 +10,13 @@ import com.emnify.kvcluster.client.actors.SenderActor;
 import com.emnify.kvcluster.client.random.RandomGenerator;
 import com.emnify.kvcluster.client.random.StringGenerator;
 import com.emnify.kvcluster.frontend.FrontendActor;
-import java.time.Duration;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.time.Duration;
+
 /**
- *
  * @author Danilo Oliveira
  */
 public class SenderActorTest {
@@ -30,8 +30,8 @@ public class SenderActorTest {
         system = ActorSystem.create();
         frontend = system.actorOf(Props.create(FrontendActor.class), "frontend");
         storage = system.actorOf(
-                Props.create(StorageActor.class, frontend),
-                "storage"
+            Props.create(StorageActor.class, frontend),
+            "storage"
         );
     }
 
@@ -46,14 +46,14 @@ public class SenderActorTest {
         new TestKit(system) {
             {
                 system.actorOf(
-                        Props.create(
-                                SenderActor.class,
-                                getRef(),
-                                (RandomGenerator) () -> 0.3,
-                                (StringGenerator) () -> "key",
-                                (StringGenerator) () -> "value",
-                                10l
-                        )
+                    Props.create(
+                        SenderActor.class,
+                        getRef(),
+                        (RandomGenerator) () -> 0.3,
+                        (StringGenerator) () -> "key",
+                        (StringGenerator) () -> "value",
+                        10l
+                    )
                 );
 
                 receiveN(10, Duration.ofSeconds(5));
@@ -66,22 +66,22 @@ public class SenderActorTest {
         new TestKit(system) {
             {
                 ActorRef sender = system.actorOf(
-                        Props.create(
-                                SenderActor.class,
-                                getRef(),
-                                (RandomGenerator) () -> 0.3,
-                                (StringGenerator) () -> "key",
-                                (StringGenerator) () -> "value",
-                                1000l
-                        )
+                    Props.create(
+                        SenderActor.class,
+                        getRef(),
+                        (RandomGenerator) () -> 0.3,
+                        (StringGenerator) () -> "key",
+                        (StringGenerator) () -> "value",
+                        1000l
+                    )
                 );
 
                 system.scheduler().scheduleOnce(
-                        Duration.ofMillis(1300),
-                        sender,
-                        SenderActor.STOP,
-                        system.dispatcher(),
-                        Actor.noSender()                       
+                    Duration.ofMillis(1300),
+                    sender,
+                    SenderActor.STOP,
+                    system.dispatcher(),
+                    Actor.noSender()
                 );
 
                 receiveN(4, Duration.ofMillis(3000));

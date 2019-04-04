@@ -1,23 +1,19 @@
 package com.emnify.kvcluster.api;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.SortedMap;
-import java.util.TreeMap;
+import java.util.*;
 
-        
+
 public class ConsistentHash<T> {
 
     private final HashFunction hashFunction;
     private final int numberOfReplicas;
     private final SortedMap<Integer, T> circle
-            = new TreeMap<>();
+        = new TreeMap<>();
     private final List<T> nodes;
-    
+
 
     public ConsistentHash(HashFunction hashFunction,
-            int numberOfReplicas, Collection<T> nodes) {
+                          int numberOfReplicas, Collection<T> nodes) {
         this.hashFunction = hashFunction;
         this.numberOfReplicas = numberOfReplicas;
         this.nodes = new ArrayList<>();
@@ -36,7 +32,7 @@ public class ConsistentHash<T> {
     private void addAux(T node) {
         for (int i = 0; i < numberOfReplicas; i++) {
             circle.put(hashFunction.hash(node.toString() + i),
-                    node);
+                node);
         }
     }
 
@@ -54,9 +50,9 @@ public class ConsistentHash<T> {
         int hash = hashFunction.hash(key);
         if (!circle.containsKey(hash)) {
             SortedMap<Integer, T> tailMap
-                    = circle.tailMap(hash);
+                = circle.tailMap(hash);
             hash = tailMap.isEmpty()
-                    ? circle.firstKey() : tailMap.firstKey();
+                ? circle.firstKey() : tailMap.firstKey();
         }
         return circle.get(hash);
     }

@@ -11,14 +11,14 @@ import com.emnify.kvcluster.client.random.RandomGenerator;
 import com.emnify.kvcluster.client.random.StringGenerator;
 import com.emnify.kvcluster.frontend.FrontendActor;
 import com.emnify.kvcluster.messages.ReplyMessage;
-import java.time.Duration;
-import java.util.function.BiConsumer;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.time.Duration;
+import java.util.function.BiConsumer;
+
 /**
- *
  * @author Danilo Oliveira
  */
 public class ReceiverActorTest {
@@ -32,8 +32,8 @@ public class ReceiverActorTest {
         system = ActorSystem.create();
         frontend = system.actorOf(Props.create(FrontendActor.class), "frontend");
         storage = system.actorOf(
-                Props.create(StorageActor.class, frontend),
-                "storage"
+            Props.create(StorageActor.class, frontend),
+            "storage"
         );
     }
 
@@ -50,26 +50,26 @@ public class ReceiverActorTest {
                 BiConsumer<ReplyMessage, ActorRef> consumer = (message, ref) -> {
                     getRef().tell(message, ActorRef.noSender());
                 };
-                
+
                 system.actorOf(
-                        Props.create(
-                                ReceiverActor.class,
-                                "key",
-                                frontend,
-                                consumer                                
-                        )
+                    Props.create(
+                        ReceiverActor.class,
+                        "key",
+                        frontend,
+                        consumer
+                    )
                 );
                 system.actorOf(
-                        Props.create(
-                                SenderActor.class,
-                                getRef(),
-                                (RandomGenerator) () -> 0.3,
-                                (StringGenerator) () -> "key",
-                                (StringGenerator) () -> "value",
-                                10l
-                        )
+                    Props.create(
+                        SenderActor.class,
+                        getRef(),
+                        (RandomGenerator) () -> 0.3,
+                        (StringGenerator) () -> "key",
+                        (StringGenerator) () -> "value",
+                        10l
+                    )
                 );
-                
+
                 receiveN(10, Duration.ofSeconds(5));
             }
         };

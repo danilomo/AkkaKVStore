@@ -10,15 +10,14 @@ import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 
 /**
- *
  * @author Danilo Oliveira
  */
 public class BackendMain {
 
     public static void main(String[] args) {
-        
+
         int port = 2551;
-        
+
         args = new String[]{"2554"};
 
         if (args.length > 0) {
@@ -31,8 +30,8 @@ public class BackendMain {
         }
 
         Config config = ConfigFactory.parseString(
-                "akka.remote.netty.tcp.port=" + port)
-                .withFallback(ConfigFactory.load("backend"));
+            "akka.remote.netty.tcp.port=" + port)
+            .withFallback(ConfigFactory.load("backend"));
 
         ActorSystem system = ActorSystem.create("kvstore", config);
 
@@ -40,7 +39,7 @@ public class BackendMain {
             .withConfig(config)
             .withName("frontend")
             .withStringList("akka.cluster.seed-nodes", s -> s + "/user/frontend")
-            .withGroup(paths -> new BroadcastGroup(paths))                
+            .withGroup(paths -> new BroadcastGroup(paths))
             .build();
 
         system.actorOf(Props.create(StorageActor.class, frontend), "storage");

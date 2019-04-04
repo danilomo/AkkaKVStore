@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.emnify</groupId>
@@ -8,14 +9,14 @@
     </parent>
     <artifactId>kvcluster-core</artifactId>
     <packaging>jar</packaging>
-    
+
     <dependencies>
         <dependency>
             <groupId>com.emnify</groupId>
             <artifactId>kvcluster-common</artifactId>
             <version>0.0.1</version>
         </dependency>
-        
+
         <dependency>
             <groupId>com.typesafe.akka</groupId>
             <artifactId>akka-testkit_2.12</artifactId>
@@ -23,9 +24,9 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-    
+
     <build>
-        <plugins>            
+        <plugins>
             <!-- Set a compiler level -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -45,10 +46,10 @@
                     <archive>
                         <manifest>
                             <mainClass>com.emnify.kvcluster.Main</mainClass>
-                        </manifest>                        
+                        </manifest>
                     </archive>
                 </configuration>
-            </plugin>            
+            </plugin>
             <!-- Includes the runtime dependencies -->
             <plugin>
                 <groupId>com.jolira</groupId>
@@ -82,9 +83,9 @@
                     </execution>
                 </executions>
             </plugin>
-        </plugins>     
+        </plugins>
     </build>
-    
+
     <!-- One-Jar is in the googlecode repository -->
     <pluginRepositories>
         <pluginRepository>

@@ -8,7 +8,6 @@ package com.emnify.kvcluster.backend;
 import akka.actor.ActorRef;
 
 /**
- *
  * @author Danilo Oliveira
  */
 public class TaketimeoutMessage {
@@ -21,6 +20,6 @@ public class TaketimeoutMessage {
     public ActorRef actor() {
         return actor;
     }
-    
-    
+
+
 }

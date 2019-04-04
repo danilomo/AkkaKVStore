@@ -7,9 +7,10 @@ import lombok.ToString;
 import lombok.experimental.Accessors;
 
 @AllArgsConstructor
-@Accessors(fluent = true) @Getter
-@EqualsAndHashCode(callSuper=false)
+@Accessors(fluent = true)
+@Getter
+@EqualsAndHashCode(callSuper = false)
 @ToString
-public class GetMessage<K> extends RequestMessage{
+public class GetMessage<K> extends RequestMessage {
     private final K key;
 }

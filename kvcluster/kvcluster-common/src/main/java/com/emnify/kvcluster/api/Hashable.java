@@ -8,14 +8,11 @@ import java.util.Arrays;
 import java.util.UUID;
 
 /**
- *
  * @author Danilo Oliveira
  */
 public abstract class Hashable {
 
     private static final BigInteger MAX_INT = new BigInteger(String.valueOf(Integer.MAX_VALUE));
-
-    public abstract byte[] toBytes();
 
     public static Hashable of(String string) {
         return new ByteArrayHash(string);
@@ -28,6 +25,20 @@ public abstract class Hashable {
     public static Hashable of(UUID uuid) {
         return new UUIDHash(uuid);
     }
+
+    public static void main(String[] args) {
+        System.out.println(Hashable.of("a").hashCode());
+        System.out.println(Hashable.of("b").hashCode());
+        System.out.println(Hashable.of("c").hashCode());
+
+        System.out.println("");
+
+        System.out.println("a".hashCode());
+        System.out.println("b".hashCode());
+        System.out.println("c".hashCode());
+    }
+
+    public abstract byte[] toBytes();
 
     @Override
     public int hashCode() {
@@ -52,18 +63,6 @@ public abstract class Hashable {
             return Arrays.equals(this.toBytes(), hasheable.toBytes());
         }
         return false;
-    }
-
-    public static void main(String[] args) {
-        System.out.println(Hashable.of("a").hashCode());
-        System.out.println(Hashable.of("b").hashCode());
-        System.out.println(Hashable.of("c").hashCode());
-
-        System.out.println("");
-
-        System.out.println("a".hashCode());
-        System.out.println("b".hashCode());
-        System.out.println("c".hashCode());
     }
 
     private static class UUIDHash extends Hashable {

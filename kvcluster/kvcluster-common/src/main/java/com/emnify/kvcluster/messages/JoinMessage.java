@@ -1,15 +1,15 @@
 package com.emnify.kvcluster.messages;
 
 import akka.actor.ActorRef;
-import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 
+import java.util.UUID;
+
 /**
- *
  * @author Danilo Oliveira
  */
 @AllArgsConstructor

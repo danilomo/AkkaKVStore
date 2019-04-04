@@ -3,13 +3,12 @@ package com.emnify.kvcluster.backend;
 import akka.actor.ActorRef;
 
 /**
- *
  * @author Danilo Oliveira
  */
-class UnregisterMessage {
+public class UnregisterMessage {
     private final String key;
     private final ActorRef actor;
-    
+
     public UnregisterMessage(String key, ActorRef actor) {
         this.key = key;
         this.actor = actor;
@@ -24,5 +23,4 @@ class UnregisterMessage {
     }
 
 
-    
 }

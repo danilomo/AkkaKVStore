@@ -12,9 +12,10 @@ import lombok.ToString;
 import lombok.experimental.Accessors;
 
 @AllArgsConstructor
-@Accessors(fluent = true) @Getter
-@EqualsAndHashCode(callSuper=false)
+@Accessors(fluent = true)
+@Getter
+@EqualsAndHashCode(callSuper = false)
 @ToString
-public class EntryMessage<V> extends ReplyMessage{
+public class EntryMessage<V> extends ReplyMessage {
     private final V value;
 }

@@ -7,16 +7,15 @@ import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 
 /**
- *
  * @author Danilo Oliveira
  */
 public class FrontendMain {
 
-    public static void main(String[] args) {                
-        
+    public static void main(String[] args) {
+
         int port = 2551;
-        
-        if(args.length > 0){
+
+        if (args.length > 0) {
             try {
                 port = Integer.parseInt(args[0]);
             } catch (NumberFormatException ne) {
@@ -26,8 +25,8 @@ public class FrontendMain {
         }
 
         Config config = ConfigFactory.parseString(
-                "akka.remote.netty.tcp.port=" + port)
-                .withFallback(ConfigFactory.load("frontend"));
+            "akka.remote.netty.tcp.port=" + port)
+            .withFallback(ConfigFactory.load("frontend"));
 
         ActorSystem system = ActorSystem.create("kvstore", config);
         system.actorOf(Props.create(FrontendActor.class), "frontend");

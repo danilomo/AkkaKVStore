@@ -3,7 +3,6 @@ package com.emnify.kvcluster.client.random;
 import java.util.Random;
 
 /**
- *
  * @author Danilo Oliveira
  */
 public class ExponentialGenerator implements RandomGenerator {

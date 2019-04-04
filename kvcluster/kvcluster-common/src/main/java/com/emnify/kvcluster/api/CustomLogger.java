@@ -4,7 +4,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 /**
- *
  * @author Danilo Oliveira
  */
 public class CustomLogger {
@@ -21,7 +20,7 @@ public class CustomLogger {
         String user = System.getProperty("user.name");
         println("/home/" + user + "/logfile.txt", contents);
     }
-    
+
     public static void main(String[] args) {
         println("Ronaldo");
     }

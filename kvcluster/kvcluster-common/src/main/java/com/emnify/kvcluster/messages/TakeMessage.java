@@ -12,10 +12,11 @@ import lombok.ToString;
 import lombok.experimental.Accessors;
 
 @AllArgsConstructor
-@Accessors(fluent = true) @Getter
-@EqualsAndHashCode(callSuper=false)
+@Accessors(fluent = true)
+@Getter
+@EqualsAndHashCode(callSuper = false)
 @ToString
-public class TakeMessage<K> extends RequestMessage{
+public class TakeMessage<K> extends RequestMessage {
     private final K key;
     private final int timeout;
 }

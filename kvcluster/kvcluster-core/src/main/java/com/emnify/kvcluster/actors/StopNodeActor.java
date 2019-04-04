@@ -5,7 +5,6 @@ import akka.cluster.Cluster;
 import com.emnify.kvcluster.messages.StopNodeMessage;
 
 /**
- *
  * @author Danilo Oliveira
  */
 public class StopNodeActor extends AbstractActor {
@@ -13,8 +12,8 @@ public class StopNodeActor extends AbstractActor {
     @Override
     public Receive createReceive() {
         return receiveBuilder()
-                .match(StopNodeMessage.class, (m) -> unregisterNodeAndTerminate())
-                .build();
+            .match(StopNodeMessage.class, (m) -> unregisterNodeAndTerminate())
+            .build();
     }
 
     private void unregisterNodeAndTerminate() {

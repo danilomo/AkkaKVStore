@@ -2,23 +2,24 @@ package com.emnify.kvcluster.client.http;
 
 import akka.actor.ActorSelection;
 import akka.actor.ActorSystem;
+import akka.http.javadsl.marshallers.jackson.Jackson;
+import akka.http.javadsl.model.StatusCodes;
 import akka.http.javadsl.server.AllDirectives;
 import akka.http.javadsl.server.PathMatchers;
 import akka.http.javadsl.server.Route;
-import static akka.pattern.Patterns.ask;
+import com.emnify.kvcluster.client.random.RandomStrings;
+
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import akka.http.javadsl.marshallers.jackson.Jackson;
-import akka.http.javadsl.model.StatusCodes;
+
+import static akka.pattern.Patterns.ask;
 import static com.emnify.kvcluster.client.actors.ReceiverActor.GET_MESSAGES;
-import com.emnify.kvcluster.client.random.RandomStrings;
-import java.util.Arrays;
 import static java.util.stream.Collectors.toList;
 
 /**
- *
  * @author Danilo Oliveira
  */
 public class HTTPApplication extends AllDirectives {
@@ -29,17 +30,24 @@ public class HTTPApplication extends AllDirectives {
         this.system = system;
     }
 
+    static <T> CompletableFuture<List<T>> sequence(List<CompletableFuture<T>> com) {
+        return CompletableFuture.allOf(com.toArray(new CompletableFuture<?>[com.size()]))
+            .thenApply(v -> com.stream()
+                .map(CompletableFuture::join)
+                .collect(toList())
+            );
+    }
+
     public Route createRoute() {
         Route getKey = get(
             () -> pathPrefix(
                 "key",
                 () -> path(
                     PathMatchers.segment(),
-                    (String key) -> {
-                        return onSuccess(getMessagesByKey(key), (t) -> {
-                            return complete(StatusCodes.OK, t, Jackson.<List>marshaller());
-                        });
-                    }
+                    (String key) ->
+                        onSuccess(getMessagesByKey(key), (t) ->
+                            complete(StatusCodes.OK, t, Jackson.<List>marshaller())
+                        )
                 )
             )
         );
@@ -47,12 +55,10 @@ public class HTTPApplication extends AllDirectives {
         Route allKeys = get(
             () -> path(
                 "keys",
-                () -> {
-                    return onSuccess(
-                        getAllMessages(), 
-                        (t) -> complete(StatusCodes.OK, t, Jackson.<List>marshaller())
-                    );
-                }
+                () -> onSuccess(
+                    getAllMessages(),
+                    (t) -> complete(StatusCodes.OK, t, Jackson.<List>marshaller())
+                )
             )
         );
 
@@ -61,12 +67,12 @@ public class HTTPApplication extends AllDirectives {
 
     private CompletableFuture<List<String>> getMessagesByKey(String key) {
         ActorSelection selection = system.actorSelection("/user/" + key);
-        
+
         CompletableFuture<Object> future = ask(
-                selection,
-                GET_MESSAGES,
-                Duration.ofMillis(1000)
-        ).toCompletableFuture().exceptionally((t) -> new ArrayList<>() );
+            selection,
+            GET_MESSAGES,
+            Duration.ofMillis(1000)
+        ).toCompletableFuture().exceptionally((t) -> new ArrayList<>());
 
         return future.thenCompose(obj -> {
             if (obj instanceof List) {
@@ -79,20 +85,12 @@ public class HTTPApplication extends AllDirectives {
 
     private CompletableFuture<List<List<String>>> getAllMessages() {
         List<String> keys = Arrays.asList(RandomStrings.KEYS);
-        
-        List<CompletableFuture<List<String>>> futures = keys
-                .stream()
-                .map( key -> getMessagesByKey(key) )
-                .collect(toList());
-        
-        return sequence(futures);
-    }
 
-    static <T> CompletableFuture<List<T>> sequence(List<CompletableFuture<T>> com) {
-        return CompletableFuture.allOf(com.toArray(new CompletableFuture<?>[com.size()]))
-                .thenApply(v -> com.stream()
-                .map(CompletableFuture::join)
-                .collect(toList())
-                );
+        List<CompletableFuture<List<String>>> futures = keys
+            .stream()
+            .map(key -> getMessagesByKey(key))
+            .collect(toList());
+
+        return sequence(futures);
     }
 }

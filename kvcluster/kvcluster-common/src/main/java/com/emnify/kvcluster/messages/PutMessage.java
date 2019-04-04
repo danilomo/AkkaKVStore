@@ -7,16 +7,16 @@ import lombok.ToString;
 import lombok.experimental.Accessors;
 
 /**
- *
- * @author Danilo Oliveira
  * @param <K> Key
  * @param <V> Value
+ * @author Danilo Oliveira
  */
 @AllArgsConstructor
-@Accessors(fluent = true) @Getter
-@EqualsAndHashCode(callSuper=false)
+@Accessors(fluent = true)
+@Getter
+@EqualsAndHashCode(callSuper = false)
 @ToString
-public class PutMessage<K, V> extends RequestMessage{
+public class PutMessage<K, V> extends RequestMessage {
     private final K key;
     private final V value;
 }

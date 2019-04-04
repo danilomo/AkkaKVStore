@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.emnify</groupId>
@@ -8,7 +9,7 @@
     </parent>
     <artifactId>kvcluster-client</artifactId>
     <packaging>jar</packaging>
-    
+
     <dependencies>
         <dependency>
             <groupId>com.emnify</groupId>
@@ -20,7 +21,7 @@
             <artifactId>bsh</artifactId>
             <version>2.0b4</version>
             <type>jar</type>
-        </dependency>        
+        </dependency>
         <dependency>
             <groupId>com.typesafe.akka</groupId>
             <artifactId>akka-testkit_2.12</artifactId>
@@ -47,9 +48,9 @@
             <artifactId>kvcluster-core</artifactId>
             <version>0.0.1</version>
             <scope>test</scope>
-        </dependency>        
+        </dependency>
     </dependencies>
-    
+
     <build>
         <plugins>
             <!-- Set a compiler level -->
@@ -71,10 +72,10 @@
                     <archive>
                         <manifest>
                             <mainClass>com.emnify.kvcluster.client.Main</mainClass>
-                        </manifest>                        
+                        </manifest>
                     </archive>
                 </configuration>
-            </plugin>            
+            </plugin>
             <!-- Includes the runtime dependencies -->
             <plugin>
                 <groupId>com.jolira</groupId>
@@ -87,7 +88,7 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>            
+            </plugin>
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>

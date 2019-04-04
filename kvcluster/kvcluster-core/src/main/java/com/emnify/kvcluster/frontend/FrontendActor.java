@@ -13,13 +13,13 @@ import com.emnify.kvcluster.messages.GetMessage;
 import com.emnify.kvcluster.messages.JoinMessage;
 import com.emnify.kvcluster.messages.PutMessage;
 import com.emnify.kvcluster.messages.TakeMessage;
+
 import java.util.ArrayList;
-import java.util.UUID;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 /**
- *
  * @author Danilo Oliveira
  */
 public class FrontendActor extends AbstractActor {
@@ -39,31 +39,30 @@ public class FrontendActor extends AbstractActor {
     public void preStart() throws Exception {
         cluster = Cluster.get(getContext().getSystem());
         cluster.subscribe(
-            getSelf(), 
-            ClusterEvent.initialStateAsEvents(), 
-            MemberEvent.class, 
+            getSelf(),
+            ClusterEvent.initialStateAsEvents(),
+            MemberEvent.class,
             MemberRemoved.class
         );
     }
-    
-    
+
 
     @Override
     public Receive createReceive() {
         return receiveBuilder()
-                .match(JoinMessage.class, this::joinMessage)
-                .match(PutMessage.class, this::putMessage)
-                .match(GetMessage.class, this::getMessage)
-                .match(TakeMessage.class, this::takeMessage)
-                .match(MemberRemoved.class, this::memberRemoved)
-                .build();
+            .match(JoinMessage.class, this::joinMessage)
+            .match(PutMessage.class, this::putMessage)
+            .match(GetMessage.class, this::getMessage)
+            .match(TakeMessage.class, this::takeMessage)
+            .match(MemberRemoved.class, this::memberRemoved)
+            .build();
     }
 
     private void joinMessage(JoinMessage message) {
         consistentHash.add(message.uuid());
         nodes.put(message.uuid(), message.actor());
         addresses.put(message.actor().path().address(), message.uuid());
-        
+
         debug();
     }
 
@@ -74,24 +73,24 @@ public class FrontendActor extends AbstractActor {
     private void getMessage(GetMessage<String> message) {
         lookupActor(message.key()).tell(message, sender());
     }
-    
+
     private void takeMessage(TakeMessage<String> message) {
         lookupActor(message.key()).tell(message, sender());
-    } 
-    
-    private void memberRemoved(MemberRemoved message){        
+    }
+
+    private void memberRemoved(MemberRemoved message) {
         Address addr = message.member().address();
-        if(addresses.containsKey(addr)){
+        if (addresses.containsKey(addr)) {
             UUID uuid = addresses.get(addr);
-            
+
             consistentHash.remove(uuid);
             addresses.remove(addr);
             nodes.remove(uuid);
-            
+
             debug();
         }
-        
-        
+
+
     }
 
     private ActorRef lookupActor(String key) {
@@ -99,11 +98,11 @@ public class FrontendActor extends AbstractActor {
         ActorRef actor = nodes.get(uuid);
         return actor;
     }
-    
+
     private void debug() {
         CustomLogger.println(nodes.toString());
         CustomLogger.println(addresses.toString());
         CustomLogger.println("");
-    }    
+    }
 
 }
