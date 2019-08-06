@@ -3,4 +3,5 @@ kvcluster/*/target/**
 deployment/.vagrant/*
 *.log
 *.retry
-
+kvcluster/.idea/*
+kvcluster/.idea/workspace.xml
