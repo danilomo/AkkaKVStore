@@ -5,6 +5,7 @@ import akka.actor.ActorSystem;
 import akka.actor.Props;
 import akka.cluster.sharding.ClusterSharding;
 import akka.cluster.sharding.ClusterShardingSettings;
+import akka.management.javadsl.AkkaManagement;
 
 
 import com.emnify.kvcluster.backend.MessageExtractor;
@@ -43,6 +44,10 @@ public class FrontendMain {
             .withFallback(ConfigFactory.load("frontend"));
 
         ActorSystem system = ActorSystem.create("kvstore", config);
+
+        if(port == 2551){
+            AkkaManagement.get(system).start();
+        }
 
         ActorRef shardProxy =
             ClusterSharding
