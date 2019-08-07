@@ -47,7 +47,7 @@ Vagrant.configure(VAGRANT_API_VERSION) do |config|
 
   list_of_nodes().each do |node|
     (name, ip_address, role, last_node) = node
-    groups[role].append(name)
+    groups[role] << name
 
     config.vm.define name do |box|
       box.vm.network :private_network, ip: ip_address
