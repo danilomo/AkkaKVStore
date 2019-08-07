@@ -15,19 +15,7 @@ import java.util.UUID;
 public class StorageActor extends AbstractActor {
 
     private final Map<String, String> map = new HashMap<>();
-    private final ActorRef frontend;
     private final Map<String, ActorRef> takeActors = new HashMap<>();
-    private UUID uuid;
-
-    public StorageActor(ActorRef frontend) {
-        this.frontend = frontend;
-    }
-
-    @Override
-    public void preStart() {
-        uuid = UUID.randomUUID();
-        frontend.tell(new JoinMessage(uuid, self()), self());
-    }
 
     @Override
     public Receive createReceive() {
@@ -35,7 +23,6 @@ public class StorageActor extends AbstractActor {
             .match(GetMessage.class, this::getMessage)
             .match(PutMessage.class, this::putMessage)
             .match(TakeMessage.class, this::takeMessage)
-            .match(UnregisterMessage.class, this::unregisterMessage)
             .match(String.class, message -> message.equals("get-contents"), s -> getContents())
             .build();
     }
@@ -49,6 +36,8 @@ public class StorageActor extends AbstractActor {
     }
 
     private void putMessage(PutMessage<String, String> message) {
+        System.out.println("My table: " + map);
+
         String key = message.key();
         String value = message.value();
 
@@ -78,10 +67,6 @@ public class StorageActor extends AbstractActor {
             }
             takeActor.tell(message, sender());
         }
-    }
-
-    private void unregisterMessage(UnregisterMessage msg) {
-        takeActors.remove(msg.key());
     }
 
     public void getContents() {

@@ -3,11 +3,16 @@ package com.emnify.kvcluster.backend;
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.actor.Props;
+import akka.cluster.sharding.ClusterSharding;
+import akka.cluster.sharding.ClusterShardingSettings;
 import akka.routing.BroadcastGroup;
 import com.emnify.kvcluster.actors.StopNodeActor;
 import com.emnify.kvcluster.api.FrontendRefBuilder;
+import com.emnify.kvcluster.messages.PutMessage;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
+
+import java.util.Scanner;
 
 /**
  * @author Danilo Oliveira
@@ -16,9 +21,7 @@ public class BackendMain {
 
     public static void main(String[] args) {
 
-        int port = 2551;
-
-        args = new String[]{"2554"};
+        int port = 0;
 
         if (args.length > 0) {
             try {
@@ -35,14 +38,22 @@ public class BackendMain {
 
         ActorSystem system = ActorSystem.create("kvstore", config);
 
-        ActorRef frontend = new FrontendRefBuilder(system)
-            .withConfig(config)
-            .withName("frontend")
-            .withStringList("akka.cluster.seed-nodes", s -> s + "/user/frontend")
-            .withGroup(paths -> new BroadcastGroup(paths))
-            .build();
+        ActorRef shardRegion =
+            ClusterSharding
+                .get(system)
+                .start(
+                  "storage",
+                    Props.create(StorageActor.class),
+                    ClusterShardingSettings.create(system),
+                    new MessageExtractor()
+                );
 
-        system.actorOf(Props.create(StorageActor.class, frontend), "storage");
-        system.actorOf(Props.create(StopNodeActor.class), "stop");
+        Scanner scanner = new Scanner(System.in);
+
+        while(true){
+            String str = scanner.nextLine();
+            String[] arr = str.split(" ");
+            shardRegion.tell( new PutMessage<>(arr[0], arr[1], arr[2]), ActorRef.noSender());
+        }
     }
 }

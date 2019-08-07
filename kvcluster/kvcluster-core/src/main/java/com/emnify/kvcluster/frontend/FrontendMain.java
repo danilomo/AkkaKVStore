@@ -1,10 +1,24 @@
 package com.emnify.kvcluster.frontend;
 
+import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.actor.Props;
-import com.emnify.kvcluster.actors.StopNodeActor;
+import akka.cluster.sharding.ClusterSharding;
+import akka.cluster.sharding.ClusterShardingSettings;
+
+
+import com.emnify.kvcluster.backend.MessageExtractor;
+
+import static akka.pattern.Patterns.ask;
+
+import com.emnify.kvcluster.backend.StorageActor;
+import com.emnify.kvcluster.messages.GetMessage;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
+
+import java.time.Duration;
+import java.util.Scanner;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * @author Danilo Oliveira
@@ -29,7 +43,30 @@ public class FrontendMain {
             .withFallback(ConfigFactory.load("frontend"));
 
         ActorSystem system = ActorSystem.create("kvstore", config);
-        system.actorOf(Props.create(FrontendActor.class), "frontend");
-        system.actorOf(Props.create(StopNodeActor.class), "stop");
+
+        ActorRef shardProxy =
+            ClusterSharding
+                .get(system)
+                .start(
+                    "storage",
+                    Props.create(StorageActor.class),
+                    ClusterShardingSettings.create(system),
+                    new MessageExtractor()
+                );
+
+        Scanner scanner = new Scanner(System.in);
+
+        while(true){
+            String str = scanner.nextLine();
+            String[] arr = str.split(" ");
+
+            CompletableFuture<Object> future1 =
+                ask(shardProxy, new GetMessage<>(arr[0], arr[1]),
+                    Duration.ofMillis(1000)).toCompletableFuture();
+            try {
+                System.out.println(future1.get());
+            }catch(Exception ex){}
+
+        }
     }
 }

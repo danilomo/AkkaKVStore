@@ -5,4 +5,8 @@ package com.emnify.kvcluster.messages;
  */
 public class StopNodeMessage extends RequestMessage {
 
+  @Override
+  public String table() {
+    return null;
+  }
 }

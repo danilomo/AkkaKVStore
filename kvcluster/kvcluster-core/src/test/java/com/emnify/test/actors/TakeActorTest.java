@@ -42,7 +42,7 @@ public class TakeActorTest {
                     "storage-testTimeout"
                 );
 
-                storage.tell(new TakeMessage<>("key", 1), probe);
+                storage.tell(new TakeMessage<>("","key", 1), probe);
                 expectMsgClass(TimeoutMessage.class);
             }
         };
@@ -58,8 +58,8 @@ public class TakeActorTest {
                     "storage-testTake"
                 );
 
-                storage.tell(new PutMessage<>("key-a", "valuea"), Actor.noSender());
-                storage.tell(new TakeMessage<>("key-a", 1), probe);
+                storage.tell(new PutMessage<>("","key-a", "valuea"), Actor.noSender());
+                storage.tell(new TakeMessage<>("","key-a", 1), probe);
                 expectMsg(new EntryMessage<>("valuea"));
             }
         };

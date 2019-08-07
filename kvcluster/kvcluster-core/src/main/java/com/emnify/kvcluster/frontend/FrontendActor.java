@@ -30,13 +30,17 @@ public class FrontendActor extends AbstractActor {
     private Cluster cluster;
 
     public FrontendActor() {
-        consistentHash = new ConsistentHash<>(obj -> obj.toString().hashCode(), 1024, new ArrayList<>());
+        consistentHash = new ConsistentHash<>(
+            obj -> obj.toString().hashCode(),
+            1024,
+            new ArrayList<>()
+        );
         nodes = new HashMap<>();
         addresses = new HashMap<>();
     }
 
     @Override
-    public void preStart() throws Exception {
+    public void preStart() {
         cluster = Cluster.get(getContext().getSystem());
         cluster.subscribe(
             getSelf(),

@@ -12,5 +12,11 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(callSuper = false)
 @ToString
 public class GetMessage<K> extends RequestMessage {
+    private final String table;
     private final K key;
+
+    public GetMessage(K key) {
+        this.key = key;
+        this.table = "";
+    }
 }

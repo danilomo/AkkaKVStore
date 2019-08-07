@@ -21,6 +21,8 @@ public class Main {
             case "frontend":
                 FrontendMain.main(remainingArgs);
                 break;
+            case "seed":
+                SeedMain.main(remainingArgs);
             default:
                 errorMain();
         }
