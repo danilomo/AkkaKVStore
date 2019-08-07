@@ -1,3 +1,5 @@
+require 'set'
+
 class Cluster  
 
   @@NO_CONFIG = Proc.new { |b| nil }
@@ -51,6 +53,20 @@ class Cluster
     last_node    = indexes.map { |i| i == indexes.length }
 
     names.zip( ip_addresses, roles, last_node )
+  end
+
+  def split_network(nodes)
+    node_set = nodes.to_set
+    other_partition = list_of_nodes()
+                        .select { |node| ! node_set.member?(node[0]) }
+                        .map { |node| node[1] }
+
+    nodes.each { |src|
+      other_partition.each { |dst|
+        puts src + ", " + dst
+      }
+    }
+    
   end
 
 
