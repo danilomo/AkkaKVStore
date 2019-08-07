@@ -12,9 +12,9 @@ seed_nodes = ((1..FRONTENDS).map { |n| "\"akka.tcp://kvstore@#{BASE_IP}.#{n + 1}
 groups = { "backend" => [], "frontend" => [], "sender" => [], "receiver" => [] }
 
 $SPECIFIC_CONFIG = {
-  "receiver_1" => Proc.new { |box|
-    box.vm.network :forwarded_port, host: 8080, guest: 8080
-  }
+#  "receiver_1" => Proc.new { |box|
+#    box.vm.network :forwarded_port, host: 8080, guest: 8080
+#  }
 }
 
 $NO_CONFIG = Proc.new { |b| nil }

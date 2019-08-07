@@ -13,9 +13,9 @@
     role: "{{ ansible_group }}"
     host_name: "{{ hostvars[inventory_hostname]['ansible_facts']['all_ipv4_addresses'] | sort | last }}"
   tasks:
-    - name: Install OpenJDK 8
+    - name: Install OpenJDK 11
       apt:
-        name: openjdk-8-jdk
+        name: openjdk-11-jdk
         state: present
         update_cache: yes
     
@@ -51,6 +51,7 @@
       git: 
         repo: https://github.com/danilomo/AkkaKVStore.git
         dest: /opt/AkkaKVStore
+        version: introducing_cluster_sharding
         
     - name: Copy frontend.conf to /src/resources/ folder
       template: src=templates/frontend.conf.j2 dest=/opt/AkkaKVStore/kvcluster/kvcluster-core/src/main/resources/frontend.conf
