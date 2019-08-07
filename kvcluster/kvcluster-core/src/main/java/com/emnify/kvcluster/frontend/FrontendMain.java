@@ -40,8 +40,9 @@ public class FrontendMain {
         }
 
         Config config = ConfigFactory.parseString(
-            "akka.remote.netty.tcp.port=" + port)
-            .withFallback(ConfigFactory.load("frontend"));
+            "akka.remote.netty.tcp.port=" + port +
+                "\nakka.management.http.port=" + (port + 2000)
+        ).withFallback(ConfigFactory.load("frontend"));
 
         ActorSystem system = ActorSystem.create("kvstore", config);
 
@@ -61,7 +62,7 @@ public class FrontendMain {
 
         Scanner scanner = new Scanner(System.in);
 
-        while(true){
+        while(true) {
             String str = scanner.nextLine();
             String[] arr = str.split(" ");
 
@@ -71,7 +72,6 @@ public class FrontendMain {
             try {
                 System.out.println(future1.get());
             }catch(Exception ex){}
-
         }
     }
 }

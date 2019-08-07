@@ -21,9 +21,15 @@ akka {
   cluster {
     seed-nodes = [ {{ seed_nodes }} ]
     roles = ["seed", "frontend"]
-    role = {
-      frontend.min-nr-of-members = 2
-    }
     auto-down-unreachable-after = 10s
+    sharding {
+      role = "storage"
+    }
+  }
+}
+
+akka.management {
+  http {
+    hostname = {{ host_name }}
   }
 }

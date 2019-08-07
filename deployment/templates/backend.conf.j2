@@ -20,10 +20,11 @@ akka {
   }
   cluster {
     seed-nodes = [ {{ seed_nodes }} ]
-    roles = ["backend"]
-    role = {
-      frontend.min-nr-of-members = 2
-    }
+    roles = ["storage"]
     auto-down-unreachable-after = 10s
+    sharding {
+      role = "storage"
+    }
   }
 }
+
