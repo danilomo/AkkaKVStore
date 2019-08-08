@@ -1,0 +1,7 @@
+#!/bin/bash
+
+for ip in "$@"
+do
+	iptables -A OUTPUT -j DROP -d $ip
+	iptables -A INPUT  -j DROP -s $ip
+done

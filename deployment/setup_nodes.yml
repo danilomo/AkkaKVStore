@@ -52,6 +52,18 @@
         repo: https://github.com/danilomo/AkkaKVStore.git
         dest: /opt/AkkaKVStore
         version: introducing_cluster_sharding
+
+    - name: Install script to add IP tables entries
+      template: src=templates/disconnect_from dest=/bin/disconnect_from
+        
+    - name: Install script to clean IP tables entries
+      template: src=templates/connect_to dest=/bin/connect_to
+
+    - name: Changing perm of /bin/connect_to, adding "+x"
+      file: dest=/bin/connect_to mode=+x
+
+    - name: Changing perm of /bin/disconnect_from, adding "+x"
+      file: dest=/bin/disconnect_from mode=+x      
         
     - name: Copy frontend.conf to /src/resources/ folder
       template: src=templates/frontend.conf.j2 dest=/opt/AkkaKVStore/kvcluster/kvcluster-core/src/main/resources/frontend.conf
