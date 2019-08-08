@@ -7,4 +7,4 @@ kvcluster/.idea/*
 kvcluster/.idea/workspace.xml
 kvcluster/kvcluster-client/kvcluster-client.iml
 kvcluster/kvcluster-core/kvcluster-core.iml
-
+.idea/*
