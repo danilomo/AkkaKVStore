@@ -46,9 +46,7 @@ public class FrontendMain {
 
         ActorSystem system = ActorSystem.create("kvstore", config);
 
-        if(port == 2551){
-            AkkaManagement.get(system).start();
-        }
+        AkkaManagement.get(system).start();
 
         ActorRef shardProxy =
             ClusterSharding
@@ -63,13 +61,14 @@ public class FrontendMain {
         Scanner scanner = new Scanner(System.in);
 
         while(true) {
-            String str = scanner.nextLine();
-            String[] arr = str.split(" ");
-
-            CompletableFuture<Object> future1 =
-                ask(shardProxy, new GetMessage<>(arr[0], arr[1]),
-                    Duration.ofMillis(1000)).toCompletableFuture();
             try {
+                String str = scanner.nextLine();
+                String[] arr = str.split(" ");
+
+                CompletableFuture<Object> future1 =
+                    ask(shardProxy, new GetMessage<>(arr[0], arr[1]),
+                        Duration.ofMillis(1000)).toCompletableFuture();
+
                 System.out.println(future1.get());
             }catch(Exception ex){}
         }

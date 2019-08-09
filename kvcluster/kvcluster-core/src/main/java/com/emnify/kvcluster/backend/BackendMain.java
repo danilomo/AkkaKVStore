@@ -5,9 +5,7 @@ import akka.actor.ActorSystem;
 import akka.actor.Props;
 import akka.cluster.sharding.ClusterSharding;
 import akka.cluster.sharding.ClusterShardingSettings;
-import akka.routing.BroadcastGroup;
-import com.emnify.kvcluster.actors.StopNodeActor;
-import com.emnify.kvcluster.api.FrontendRefBuilder;
+import akka.management.javadsl.AkkaManagement;
 import com.emnify.kvcluster.messages.PutMessage;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
@@ -33,10 +31,13 @@ public class BackendMain {
         }
 
         Config config = ConfigFactory.parseString(
-            "akka.remote.netty.tcp.port=" + port)
-            .withFallback(ConfigFactory.load("backend"));
+            "akka.remote.netty.tcp.port=" + port +
+                "\nakka.management.http.port=" + (port + 2000)
+        ).withFallback(ConfigFactory.load("backend"));
 
         ActorSystem system = ActorSystem.create("kvstore", config);
+
+        AkkaManagement.get(system).start();
 
         ActorRef shardRegion =
             ClusterSharding
@@ -51,9 +52,11 @@ public class BackendMain {
         Scanner scanner = new Scanner(System.in);
 
         while(true){
-            String str = scanner.nextLine();
-            String[] arr = str.split(" ");
-            shardRegion.tell( new PutMessage<>(arr[0], arr[1], arr[2]), ActorRef.noSender());
+            try {
+                String str = scanner.nextLine();
+                String[] arr = str.split(" ");
+                shardRegion.tell(new PutMessage<>(arr[0], arr[1], arr[2]), ActorRef.noSender());
+            }catch(Exception ex){}
         }
     }
 }
