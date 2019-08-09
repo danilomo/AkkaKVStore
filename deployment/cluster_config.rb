@@ -68,9 +68,12 @@ class Cluster
   end
 
   def crash_node(node)
+      `vagrant ssh #{node} -c 'sudo kill -9 $(pgrep java)'`    
   end
 
-  def freeze_node(node)
+  def freeze_node(node, time)
+      `vagrant ssh #{node} -c 'pkill -STOP java && sleep #{time} && pkill -CONT java'`
   end
 
+  private :alter_network
 end

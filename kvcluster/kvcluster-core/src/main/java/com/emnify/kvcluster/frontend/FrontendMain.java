@@ -9,9 +9,7 @@ import akka.management.javadsl.AkkaManagement;
 
 
 import com.emnify.kvcluster.backend.MessageExtractor;
-
 import static akka.pattern.Patterns.ask;
-
 import com.emnify.kvcluster.backend.StorageActor;
 import com.emnify.kvcluster.messages.GetMessage;
 import com.typesafe.config.Config;
