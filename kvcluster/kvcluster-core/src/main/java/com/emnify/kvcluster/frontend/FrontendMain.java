@@ -41,7 +41,7 @@ public class FrontendMain {
 
         Config config = ConfigFactory.parseString(
             "akka.remote.netty.tcp.port=" + port +
-                "\nakka.management.http.port=" + (port + 2000)
+                "\nakka.management.http.port=" + (8080)
         ).withFallback(ConfigFactory.load("frontend"));
 
         ActorSystem system = ActorSystem.create("kvstore", config);
