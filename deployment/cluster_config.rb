@@ -1,4 +1,6 @@
 require 'set'
+require 'net/http'
+require 'json'
 
 NO_CONFIG = Proc.new { |b| nil }
 
@@ -73,6 +75,16 @@ class Cluster
 
   def freeze_node(node, time)
       `vagrant ssh #{node} -c 'pkill -STOP java && sleep #{time} && pkill -CONT java'`
+  end
+
+  def singleton_location(frontend_addr)
+    JSON.parse(
+      Net::HTTP.get(
+        frontend_addr,
+        "/singleton",
+        8000
+      )
+    )["address"]
   end
 
   private :alter_network

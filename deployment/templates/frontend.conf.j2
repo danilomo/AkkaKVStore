@@ -21,7 +21,7 @@ akka {
   cluster {
     seed-nodes = [ {{ seed_nodes }} ]
     roles = ["seed", "frontend"]
-    auto-down-unreachable-after = 10s
+    #auto-down-unreachable-after = 10s
     sharding {
       role = "storage"
     }
@@ -31,6 +31,7 @@ akka {
 akka.management {
   http {
     hostname = {{ host_name }}
+    route-providers-read-only = false
   }
 }
 
