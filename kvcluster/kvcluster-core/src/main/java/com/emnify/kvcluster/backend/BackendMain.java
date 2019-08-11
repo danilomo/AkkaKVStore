@@ -37,6 +37,11 @@ public class BackendMain {
 
         ActorSystem system = ActorSystem.create("kvstore", config);
 
+        ActorRef ref = system.actorOf(
+            Props.create(SingletonCheckerActor.class),
+            "singletonChecker"
+        );
+
         AkkaManagement.get(system).start();
 
         ActorRef shardRegion =
@@ -48,6 +53,8 @@ public class BackendMain {
                     ClusterShardingSettings.create(system),
                     new MessageExtractor()
                 );
+
+        ref.tell("Rona!", ActorRef.noSender());
 
         Scanner scanner = new Scanner(System.in);
 
