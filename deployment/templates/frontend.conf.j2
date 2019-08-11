@@ -33,3 +33,15 @@ akka.management {
     hostname = {{ host_name }}
   }
 }
+
+akka.actor.deployment {
+  /singletonChecker {
+    router = broadcast-group
+    routees.paths = ["/user/singletonChecker"]
+    cluster {
+      enabled = on
+      allow-local-routees = on
+      use-roles = ["storage"]
+    }
+  }
+}

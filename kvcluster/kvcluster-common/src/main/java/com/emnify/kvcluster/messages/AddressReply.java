@@ -1,6 +1,5 @@
 package com.emnify.kvcluster.messages;
 
-import akka.actor.Address;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

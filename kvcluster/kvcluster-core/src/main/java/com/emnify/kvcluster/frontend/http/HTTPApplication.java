@@ -2,7 +2,6 @@ package com.emnify.kvcluster.frontend.http;
 
 import akka.actor.ActorSelection;
 import akka.actor.ActorSystem;
-import akka.actor.Address;
 import akka.http.javadsl.marshallers.jackson.Jackson;
 import akka.http.javadsl.model.StatusCodes;
 import akka.http.javadsl.server.AllDirectives;

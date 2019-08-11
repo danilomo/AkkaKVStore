@@ -9,6 +9,12 @@ import java.time.Duration;
 
 public class SingletonCheckerActor extends AbstractActor {
 
+    private final String address;
+
+    public SingletonCheckerActor(final String address) {
+        this.address = address;
+    }
+
     @Override
     public Receive createReceive() {
         return receiveBuilder()
@@ -31,13 +37,7 @@ public class SingletonCheckerActor extends AbstractActor {
             .resolveOne(Duration.ofMillis(200))
             .toCompletableFuture()
             .thenAccept(
-                ref -> {
-                    Address address = self()
-                        .path()
-                        .address();
-
-                    sender.tell(address, self());
-                }
+                ref -> sender.tell(address, self())
             );
     }
 }

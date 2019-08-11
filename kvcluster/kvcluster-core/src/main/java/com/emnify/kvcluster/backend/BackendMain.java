@@ -2,6 +2,7 @@ package com.emnify.kvcluster.backend;
 
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
+import akka.actor.Address;
 import akka.actor.Props;
 import akka.cluster.sharding.ClusterSharding;
 import akka.cluster.sharding.ClusterShardingSettings;
@@ -37,8 +38,10 @@ public class BackendMain {
 
         ActorSystem system = ActorSystem.create("kvstore", config);
 
+        String hostName = config.getString("akka.remote.netty.tcp.hostname");
+
         ActorRef ref = system.actorOf(
-            Props.create(SingletonCheckerActor.class),
+            Props.create(SingletonCheckerActor.class, hostName),
             "singletonChecker"
         );
 
