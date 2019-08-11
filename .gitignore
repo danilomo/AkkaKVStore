@@ -8,3 +8,6 @@ kvcluster/.idea/workspace.xml
 kvcluster/kvcluster-client/kvcluster-client.iml
 kvcluster/kvcluster-core/kvcluster-core.iml
 .idea/*
+kvcluster.iml
+kvcluster/kvcluster-common/kvcluster-common.iml
+kvcluster/kvcluster.iml
