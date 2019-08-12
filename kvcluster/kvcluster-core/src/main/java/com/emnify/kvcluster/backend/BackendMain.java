@@ -57,9 +57,7 @@ public class BackendMain {
                     new MessageExtractor()
                 );
 
-        ref.tell("Rona!", ActorRef.noSender());
-
-        Scanner scanner = new Scanner(System.in);
+        /*Scanner scanner = new Scanner(System.in);
 
         while(true){
             try {
@@ -67,6 +65,6 @@ public class BackendMain {
                 String[] arr = str.split(" ");
                 shardRegion.tell(new PutMessage<>(arr[0], arr[1], arr[2]), ActorRef.noSender());
             }catch(Exception ex){}
-        }
+        }*/
     }
 }

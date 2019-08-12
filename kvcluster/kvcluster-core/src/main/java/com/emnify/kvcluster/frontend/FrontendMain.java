@@ -41,7 +41,7 @@ public class FrontendMain {
 
         ActorRef router = createBackendRouter(system);
 
-        mainLoop(router, shardProxy);
+        //mainLoop(router, shardProxy);
     }
 
     private static void mainLoop(ActorRef router,
