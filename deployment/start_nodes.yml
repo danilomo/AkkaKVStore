@@ -6,7 +6,10 @@
   gather_facts: True
   vars:
     ansible_python_interpreter: /usr/bin/python3
-  tasks:        
+  tasks:
+    - name: Copy sbr-strategy.conf to /opt/AkkaKVStore/
+      template: src=templates/{{ sbr_strategy }}.conf dest=/opt/AkkaKVStore/sbr-strategy.conf
+    
     - name: Copy run_node.sh script to home folder
       template: src=templates/run_node.sh.j2 dest=~/run_node.sh
       

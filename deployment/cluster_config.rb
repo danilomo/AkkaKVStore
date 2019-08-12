@@ -22,10 +22,12 @@ class Cluster
     @seed_nodes = ((1..@frontends).map { |n| "\"akka.tcp://kvstore@#{@base_ip}.#{n + 1}:2551\"" }).join(", ")
     @groups = { "backend" => [], "frontend" => [], "sender" => [], "receiver" => [] }
     @specific_config = specific_config
+    @list_of_nodes = get_list_of_nodes
   end
 
   attr_reader :seed_nodes
   attr_reader :groups
+  attr_reader :list_of_nodes
   
   def apply_specific_config(name, box)
     block = @specific_config.fetch(name, NO_CONFIG)
@@ -38,7 +40,7 @@ class Cluster
     vb.cpus = 1
   end
 
-  def list_of_nodes
+  def get_list_of_nodes
     indexes      = (1..(@frontends + @backends + @senders + @receivers)).to_a  
     sufixes      = [ (1 .. @frontends).to_a, (1 .. @backends).to_a, (1 .. @senders).to_a, (1 .. @receivers).to_a ].flatten
     roles        = [ ["frontend"] * @frontends, ["backend"] * @backends, ["sender"] * @senders, ["receiver"] * @receivers ].flatten
@@ -87,5 +89,29 @@ class Cluster
     )["address"]
   end
 
-  private :alter_network
+  def leader_location(frontend_addr)
+    str = JSON.parse(
+      Net::HTTP.get(
+        frontend_addr,
+        "/cluster/members",
+        8080
+      )
+    )["leader"]
+
+    str
+      .match('[^\@]+[\@]([^\:]+)[:]([1-9]+)')
+      .captures
+  end
+
+  def host_name(addr)
+    list_of_nodes
+      .find { |n| n[1] == addr }[0]
+  end
+
+  def address(host_name)
+    list_of_nodes
+      .find { |n| n[0] == host_name }[1]
+  end
+
+  private :alter_network, :get_list_of_nodes
 end
