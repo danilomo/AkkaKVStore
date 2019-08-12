@@ -100,7 +100,7 @@ class Cluster
 
     str
       .match('[^\@]+[\@]([^\:]+)[:]([1-9]+)')
-      .captures
+      .captures[0]
   end
 
   def host_name(addr)
