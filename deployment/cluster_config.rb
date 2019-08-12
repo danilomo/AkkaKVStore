@@ -76,7 +76,7 @@ class Cluster
   end
 
   def freeze_node(node, time)
-      `vagrant ssh #{node} -c 'pkill -STOP java && sleep #{time} && pkill -CONT java'`
+      `vagrant ssh #{node} -c 'sudo pkill -STOP java && sleep #{time} && sudo pkill -CONT java'`
   end
 
   def singleton_location(frontend_addr)

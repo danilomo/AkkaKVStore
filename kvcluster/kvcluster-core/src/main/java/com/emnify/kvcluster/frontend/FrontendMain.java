@@ -38,6 +38,7 @@ public class FrontendMain {
         ActorSystem system = startActorSystem(args);
 
         ActorRef shardProxy = createShardProxy(system);
+        System.out.println(shardProxy);
 
         ActorRef router = createBackendRouter(system);
 
