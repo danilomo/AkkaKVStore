@@ -72,11 +72,11 @@ class Cluster
   end
 
   def crash_node(node)
-      `vagrant ssh #{node} -c 'sudo kill -9 $(pgrep java)'`    
+    `vagrant ssh #{node} -c 'sudo kill -9 $(pgrep java)'`    
   end
 
   def freeze_node(node, time)
-      `vagrant ssh #{node} -c 'sudo pkill -STOP java && sleep #{time} && sudo pkill -CONT java'`
+    `vagrant ssh #{node} -c 'sudo pkill -STOP java && sleep #{time} && sudo pkill -CONT java'`
   end
 
   def singleton_location(frontend_addr)
@@ -111,6 +111,22 @@ class Cluster
   def address(host_name)
     list_of_nodes
       .find { |n| n[0] == host_name }[1]
+  end
+
+  def put_entry(host, table, key, value)
+    req = Net::HTTP::Put.new("/kvstorage/#{table}/#{key}", initheader = { 'Content-Type' => 'application/json'})
+    req.body = { :value => value }.to_json
+    Net::HTTP.new(host, 8000).start { |http| http.request(req) }    
+  end
+
+  def get_entry(host, table, key)
+    JSON.parse(
+      Net::HTTP.get(
+        host,
+        "/kvstorage/#{table}/#{key}",
+        8000
+      )
+    )["value"]    
   end
 
   private :alter_network, :get_list_of_nodes
