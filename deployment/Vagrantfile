@@ -1,68 +1,35 @@
+require './cluster_config'
+
 VAGRANT_API_VERSION = "2"
 
-BASE_IP = "192.168.1"
-
-SENDERS   = 1
-RECEIVERS = 1
-FRONTENDS = 2
-BACKENDS  = 2
-
-seed_nodes = ((1..FRONTENDS).map { |n| "\"akka.tcp://kvstore@#{BASE_IP}.#{n + 1}:2551\"" }).join(", ")
-
-groups = { "backend" => [], "frontend" => [], "sender" => [], "receiver" => [] }
-
-$SPECIFIC_CONFIG = {
-  "receiver_1" => Proc.new { |box|
-    box.vm.network :forwarded_port, host: 8080, guest: 8080
-  }
-}
-
-$NO_CONFIG = Proc.new { |b| nil }
-
-def apply_specific_config(name, box)
-  block = $SPECIFIC_CONFIG.fetch(name, $NO_CONFIG)
-  block.call(box)
-end
-
-def configure_virtualbox_vm(vb,name)
-  vb.name = name
-  vb.memory = 512
-  vb.cpus = 1
-end
-
-def list_of_nodes()
-  indexes      = (1..(FRONTENDS+BACKENDS+SENDERS+RECEIVERS)).to_a  
-  sufixes      = [ (1 .. FRONTENDS).to_a, (1 .. BACKENDS).to_a, (1 .. SENDERS).to_a, (1 .. RECEIVERS).to_a ].flatten
-  roles        = [ ["frontend"] * FRONTENDS, ["backend"] * BACKENDS, ["sender"] * SENDERS, ["receiver"] * RECEIVERS ].flatten
-  names        = roles.zip(sufixes).map { |item| "#{item[0]}_#{item[1]}" }
-  ip_addresses = indexes.map { |i| "#{BASE_IP}.#{1 + i}" }
-  last_node    = indexes.map { |i| i == indexes.length }
-
-  names.zip( ip_addresses, roles, last_node )
-end
+cluster = Cluster.new(
+  frontends: 2,
+  backends: 5
+)
 
 Vagrant.configure(VAGRANT_API_VERSION) do |config|
   config.vm.box = "ubuntu/bionic64"
   config.ssh.forward_agent = true
 
-  list_of_nodes().each do |node|
+  cluster.list_of_nodes.each do |node|
     (name, ip_address, role, last_node) = node
-    groups[role].append(name)
+    cluster.groups[role] << name
 
     config.vm.define name do |box|
       box.vm.network :private_network, ip: ip_address
       
       box.vm.provider :virtualbox do |vb|
-        configure_virtualbox_vm(vb, name)      
+        cluster.configure_virtualbox_vm(vb, name)      
       end
-      apply_specific_config(name, box)       
+      
+      cluster.apply_specific_config(name, box)       
 
       if last_node
         box.vm.provision "ansible" do |ansible|
           ansible.limit = 'all'
           ansible.playbook = "setup_nodes.yml"
-          ansible.extra_vars = { seed_nodes: seed_nodes }
-          ansible.groups = groups
+          ansible.extra_vars = { seed_nodes: cluster.seed_nodes }
+          ansible.groups = cluster.groups
         end        
       end
     end    

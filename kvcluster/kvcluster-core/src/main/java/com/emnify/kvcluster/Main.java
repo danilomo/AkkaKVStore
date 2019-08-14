@@ -7,7 +7,8 @@ import com.emnify.kvcluster.frontend.FrontendMain;
  * @author Danilo Oliveira
  */
 public class Main {
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) {
+
         if (args.length < 1) {
             errorMain();
         }

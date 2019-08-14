@@ -8,14 +8,16 @@ package com.emnify.kvcluster.messages;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 
 @AllArgsConstructor
-@Accessors(fluent = true)
+@Accessors
 @Getter
+@Setter
 @EqualsAndHashCode(callSuper = false)
 @ToString
 public class EntryMessage<V> extends ReplyMessage {
-    private final V value;
+    private V value;
 }

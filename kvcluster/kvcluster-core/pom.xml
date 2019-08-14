@@ -20,8 +20,44 @@
         <dependency>
             <groupId>com.typesafe.akka</groupId>
             <artifactId>akka-testkit_2.12</artifactId>
-            <version>2.5.21</version>
+            <version>2.5.23</version>
             <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.typesafe.akka</groupId>
+            <artifactId>akka-cluster-sharding_2.12</artifactId>
+            <version>2.5.23</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.lightbend.akka.management</groupId>
+            <artifactId>akka-management_2.12</artifactId>
+            <version>1.0.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.lightbend.akka.management</groupId>
+            <artifactId>akka-management-cluster-http_2.12</artifactId>
+            <version>1.0.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.typesafe.akka</groupId>
+            <artifactId>akka-http-jackson_2.12</artifactId>
+            <version>10.1.7</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.ajjpj.simple-akka-downing</groupId>
+            <artifactId>simple-akka-downing_2.12</artifactId>
+            <version>0.9.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>pl.immutables</groupId>
+            <artifactId>akka-reasonable-downing_2.12</artifactId>
+            <version>1.1.0</version>
         </dependency>
     </dependencies>
 

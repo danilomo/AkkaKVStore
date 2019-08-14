@@ -20,10 +20,17 @@ akka {
   }
   cluster {
     seed-nodes = [ {{ seed_nodes }} ]
-    roles = ["backend"]
-    role = {
-      frontend.min-nr-of-members = 2
+    roles = ["storage"]
+    sharding {
+      role = "storage"
     }
-    auto-down-unreachable-after = 10s
   }
 }
+
+akka.management {
+  http {
+    hostname = {{ host_name }}
+  }
+}
+
+include file("/opt/AkkaKVStore/sbr-strategy.conf")

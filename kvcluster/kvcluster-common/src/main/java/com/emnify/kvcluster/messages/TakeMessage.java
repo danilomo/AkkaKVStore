@@ -17,6 +17,13 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(callSuper = false)
 @ToString
 public class TakeMessage<K> extends RequestMessage {
+    private final String table;
     private final K key;
     private final int timeout;
+
+    public TakeMessage(K key, int timeout) {
+        this.key = key;
+        this.timeout = timeout;
+        this.table = "";
+    }
 }

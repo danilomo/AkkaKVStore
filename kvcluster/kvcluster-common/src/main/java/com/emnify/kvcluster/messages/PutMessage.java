@@ -17,6 +17,13 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(callSuper = false)
 @ToString
 public class PutMessage<K, V> extends RequestMessage {
+    private final String table;
     private final K key;
     private final V value;
+
+    public PutMessage(K key, V value) {
+        this.key = key;
+        this.value = value;
+        this.table = "";
+    }
 }
