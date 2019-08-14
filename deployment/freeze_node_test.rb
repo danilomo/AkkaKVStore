@@ -24,11 +24,8 @@ puts "Let's find out where the stored value is:"
 address = first_node_not_empty_shardregions(cluster)
 puts "\tThe value we sent is stored on: #{address}"
 
-puts "Let's crash this node and try to access the same table..."
-cluster.crash_node(cluster.host_name(address))
-
-puts "Sleeping for 30 seconds..."
-sleep 30
+puts "Let's freeze this node for 30 seconds and try to access the same table..."
+cluster.freeze_node(cluster.host_name(address), 30)
 
 puts "Putting value on key-value storage again..."
 cluster.put_entry( "192.168.1.2", "myTable", "foo", "FOO FOO" )

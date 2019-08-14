@@ -2,7 +2,10 @@ require './cluster_config'
 
 VAGRANT_API_VERSION = "2"
 
-cluster = Cluster.new()
+cluster = Cluster.new(
+  frontends: 2,
+  backends: 5
+)
 
 Vagrant.configure(VAGRANT_API_VERSION) do |config|
   config.vm.box = "ubuntu/bionic64"

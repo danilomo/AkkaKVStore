@@ -126,7 +126,17 @@ class Cluster
         "/kvstorage/#{table}/#{key}",
         8000
       )
-    )["value"]    
+    )["value"]
+  end
+
+  def get_shard_regions(host)
+    JSON.parse(
+      Net::HTTP.get(
+        host,
+        "/cluster/shards/storage",
+        8080
+      )
+    )["regions"]        
   end
 
   private :alter_network, :get_list_of_nodes
