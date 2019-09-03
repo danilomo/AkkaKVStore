@@ -58,7 +58,7 @@ public class TakeActorTest {
                     "storage-testTake"
                 );
 
-                storage.tell(new PutMessage<>("","key-a", "valuea"), Actor.noSender());
+                storage.tell(new PutMessage<>("","key-a", "valuea"), ActorRef.noSender());
                 storage.tell(new TakeMessage<>("","key-a", 1), probe);
                 expectMsg(new EntryMessage<>("valuea"));
             }
@@ -77,7 +77,7 @@ public class TakeActorTest {
 
         storage.tell(new TakeMessage<>("key", 1), probe1.getRef());
         storage.tell(new TakeMessage<>("key", 1), probe2.getRef());
-        storage.tell(new PutMessage<>("key", "value"), Actor.noSender());
+        storage.tell(new PutMessage<>("key", "value"), ActorRef.noSender());
 
         probe1.expectMsg(new EntryMessage<>("value"));
         probe2.expectMsgClass(TimeoutMessage.class);
@@ -95,8 +95,8 @@ public class TakeActorTest {
 
         storage.tell(new TakeMessage<>("key", 1), probe1.getRef());
         storage.tell(new TakeMessage<>("key", 1), probe2.getRef());
-        storage.tell(new PutMessage<>("key", "valuea"), Actor.noSender());
-        storage.tell(new PutMessage<>("key", "valueb"), Actor.noSender());
+        storage.tell(new PutMessage<>("key", "valuea"), ActorRef.noSender());
+        storage.tell(new PutMessage<>("key", "valueb"), ActorRef.noSender());
 
         probe1.expectMsg(new EntryMessage<>("valuea"));
         probe2.expectMsg(new EntryMessage<>("valueb"));
@@ -115,14 +115,14 @@ public class TakeActorTest {
 
         storage.tell(new TakeMessage<>("key", 1), probe1.getRef());
         storage.tell(new TakeMessage<>("key", 1), probe2.getRef());
-        storage.tell(new PutMessage<>("key", "valuea"), Actor.noSender());
-        storage.tell(new PutMessage<>("key", "valueb"), Actor.noSender());
+        storage.tell(new PutMessage<>("key", "valuea"), ActorRef.noSender());
+        storage.tell(new PutMessage<>("key", "valueb"), ActorRef.noSender());
 
         probe1.expectMsg(new EntryMessage<>("valuea"));
         probe2.expectMsg(new EntryMessage<>("valueb"));
 
-        storage.tell(new PutMessage<>("key", "valuea"), Actor.noSender());
-        storage.tell(new PutMessage<>("key", "valueb"), Actor.noSender());
+        storage.tell(new PutMessage<>("key", "valuea"), ActorRef.noSender());
+        storage.tell(new PutMessage<>("key", "valueb"), ActorRef.noSender());
 
         probe1.expectNoMessage();
         probe2.expectNoMessage();

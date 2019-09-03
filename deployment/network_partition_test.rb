@@ -41,5 +41,8 @@ puts "Let's find out where the stored value is after resharding:"
 new_address = first_node_not_empty_shardregions(cluster, not_equals_to: [address, "192.168.1.2"])
 puts "The value we sent is stored on: #{new_address}"
 
+puts "Cluster members: #{cluster.get_cluster_members('192.168.1.3')}"
+
 # restoring the network
 cluster.merge_network([cluster.host_name(address), "frontend_1"])
+

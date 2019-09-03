@@ -139,5 +139,25 @@ class Cluster
     )["regions"]        
   end
 
+  def get_cluster_members(host)
+    members = JSON.parse(
+      Net::HTTP.get(
+        host,
+        "/cluster/members",
+        8080
+      )
+    )["members"]
+
+    members
+      .map { |m| m["node"]
+               .match('[^\@]+[\@]([^\:]+)[:]([1-9]+)')
+               .captures[0]
+    }
+      .sort
+  end
+
   private :alter_network, :get_list_of_nodes
 end
+
+
+

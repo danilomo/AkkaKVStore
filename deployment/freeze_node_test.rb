@@ -37,3 +37,5 @@ puts "\tThe value we just sent: #{value}"
 puts "Let's find out where the stored value is after resharding:"
 new_address = first_node_not_empty_shardregions(cluster, not_equals_to: address)
 puts "The value we sent is stored on: #{new_address}"
+
+puts "Cluster members: #{cluster.get_cluster_members('192.168.1.2')}"

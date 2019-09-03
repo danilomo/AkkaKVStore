@@ -81,7 +81,7 @@ public class SenderActorTest {
                     sender,
                     SenderActor.STOP,
                     system.dispatcher(),
-                    Actor.noSender()
+                    ActorRef.noSender()
                 );
 
                 receiveN(4, Duration.ofMillis(3000));
