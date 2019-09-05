@@ -27,13 +27,15 @@ puts "\tThe value we sent is stored on: #{address}"
 puts "Let's freeze this node for 30 seconds and try to access the same table..."
 cluster.freeze_node(cluster.host_name(address), 30)
 
-puts "Putting value on key-value storage again..."
-cluster.put_entry( "192.168.1.2", "myTable", "foo", "FOO FOO" )
+#puts "Putting value on key-value storage again..."
+#cluster.put_entry( "192.168.1.2", "myTable", "foo", "FOO FOO" )
 
-puts "Getting value from key-value storage again:"
-value = cluster.get_entry( "192.168.1.2", "myTable", "foo" )
-puts "\tThe value we just sent: #{value}"
+#puts "Getting value from key-value storage again:"
+#value = cluster.get_entry( "192.168.1.2", "myTable", "foo" )
+#puts "\tThe value we just sent: #{value}"
 
-puts "Let's find out where the stored value is after resharding:"
-new_address = first_node_not_empty_shardregions(cluster, not_equals_to: address)
-puts "The value we sent is stored on: #{new_address}"
+#puts "Let's find out where the stored value is after resharding:"
+#new_address = first_node_not_empty_shardregions(cluster, not_equals_to: address)
+#puts "The value we sent is stored on: #{new_address}"
+
+puts "Cluster members: #{cluster.get_cluster_members('192.168.1.2')}"

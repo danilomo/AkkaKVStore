@@ -59,7 +59,7 @@ public class TakeActor extends AbstractActor {
 
     private void timeoutMessage(TaketimeoutMessage msg) {
         ActorRef receiver = msg.actor();
-        receiver.tell(new TimeoutMessage(), Actor.noSender());
+        receiver.tell(new TimeoutMessage(), ActorRef.noSender());
         receivers.remove(receiver);
 
         unregisterAndStopIfEmpty();
@@ -67,7 +67,7 @@ public class TakeActor extends AbstractActor {
 
     private void unregisterAndStopIfEmpty() {
         if (receivers.isEmpty()) {
-            parent.tell(new UnregisterMessage(key, self()), Actor.noSender());
+            parent.tell(new UnregisterMessage(key, self()), ActorRef.noSender());
             context().stop(self());
         }
     }

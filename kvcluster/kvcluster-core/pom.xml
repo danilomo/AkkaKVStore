@@ -19,45 +19,62 @@
 
         <dependency>
             <groupId>com.typesafe.akka</groupId>
-            <artifactId>akka-testkit_2.12</artifactId>
+            <artifactId>akka-testkit_2.11</artifactId>
             <version>2.5.23</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>com.typesafe.akka</groupId>
-            <artifactId>akka-cluster-sharding_2.12</artifactId>
+            <artifactId>akka-cluster-sharding_2.11</artifactId>
             <version>2.5.23</version>
         </dependency>
 
         <dependency>
             <groupId>com.lightbend.akka.management</groupId>
-            <artifactId>akka-management_2.12</artifactId>
+            <artifactId>akka-management_2.11</artifactId>
             <version>1.0.2</version>
         </dependency>
 
         <dependency>
             <groupId>com.lightbend.akka.management</groupId>
-            <artifactId>akka-management-cluster-http_2.12</artifactId>
+            <artifactId>akka-management-cluster-http_2.11</artifactId>
             <version>1.0.2</version>
         </dependency>
 
         <dependency>
             <groupId>com.typesafe.akka</groupId>
-            <artifactId>akka-http-jackson_2.12</artifactId>
-            <version>10.1.7</version>
+            <artifactId>akka-http-jackson_2.11</artifactId>
+            <version>10.1.9</version>
         </dependency>
 
         <dependency>
-            <groupId>com.ajjpj.simple-akka-downing</groupId>
-            <artifactId>simple-akka-downing_2.12</artifactId>
-            <version>0.9.1</version>
+            <groupId>com.lightbend.akka</groupId>
+            <artifactId>akka-split-brain-resolver_2.11</artifactId>
+            <version>1.1.10</version>
         </dependency>
 
+        <!-- Use Coda Hale Metrics and Akka instrumentation -->
         <dependency>
-            <groupId>pl.immutables</groupId>
-            <artifactId>akka-reasonable-downing_2.12</artifactId>
-            <version>1.1.0</version>
+            <groupId>com.lightbend.cinnamon</groupId>
+            <artifactId>cinnamon-chmetrics</artifactId>
+            <version>2.11.4</version>
+        </dependency>
+        <!-- Use Akka instrumentation -->
+        <dependency>
+            <groupId>com.lightbend.cinnamon</groupId>
+            <artifactId>cinnamon-akka_2.11</artifactId>
+            <version>2.11.4</version>
+        </dependency>
+        <dependency>
+            <groupId>com.lightbend.cinnamon</groupId>
+            <artifactId>cinnamon-prometheus</artifactId>
+            <version>2.11.4</version>
+        </dependency>
+        <dependency>
+            <groupId>com.lightbend.cinnamon</groupId>
+            <artifactId>cinnamon-prometheus-httpserver</artifactId>
+            <version>2.11.4</version>
         </dependency>
     </dependencies>
 
@@ -119,6 +136,47 @@
                     </execution>
                 </executions>
             </plugin>
+
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.1.1</version>
+                <executions>
+                    <execution>
+                        <id>copy</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>com.lightbend.cinnamon</groupId>
+                                    <artifactId>cinnamon-agent</artifactId>
+                                    <version>2.11.4</version>
+                                    <overWrite>true</overWrite>
+                                    <destFileName>cinnamon-agent.jar</destFileName>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.6.0</version>
+                <configuration>
+                    <executable>java</executable>
+                    <arguments>
+                        <argument>-classpath</argument>
+                        <classpath/>
+                        <argument>-javaagent:${project.build.directory}/dependency/cinnamon-agent.jar</argument>
+                    </arguments>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
@@ -129,4 +187,12 @@
             <url>http://onejar-maven-plugin.googlecode.com/svn/mavenrepo</url>
         </pluginRepository>
     </pluginRepositories>
+
+    <repositories>
+        <repository>
+            <id>lightbend-commercial</id>
+            <name>Lightbend Commercial</name>
+            <url>https://lightbend.bintray.com/commercial-releases</url>
+        </repository>
+    </repositories>
 </project>

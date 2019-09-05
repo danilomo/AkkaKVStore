@@ -72,7 +72,23 @@
       template: src=templates/backend.conf.j2 dest=/opt/AkkaKVStore/kvcluster/kvcluster-core/src/main/resources/backend.conf    
 
     - name: Copy client.conf to /src/resources/ folder
-      template: src=templates/client.conf.j2 dest=/opt/AkkaKVStore/kvcluster/kvcluster-client/src/main/resources/client.conf 
+      template: src=templates/client.conf.j2 dest=/opt/AkkaKVStore/kvcluster/kvcluster-client/src/main/resources/client.conf
+
+    - name: Copy .m2/settings.xml
+      copy:
+        src: /home/danilo/.m2/settings.xml
+        dest: /root/.m2/settings.xml
+
+    - name: Make sure destination dir exists
+      file:
+        path: /root/.lightbend/
+        state: directory
+        recurse: yes
+        
+    - name: Copy ligthbend credentials
+      copy:
+        src: /home/danilo/.lightbend/commercial.credentials
+        dest: /root/.lightbend/commercial.credentials
     
     - name: Building project
       shell: "cd /opt/AkkaKVStore/kvcluster && mvn clean install -Dmaven.test.skip=true"

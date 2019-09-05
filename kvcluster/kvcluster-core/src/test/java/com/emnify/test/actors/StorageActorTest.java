@@ -34,7 +34,7 @@ public class StorageActorTest {
         new TestKit(system) {
             {
                 ActorRef storage = createStorageActor("testPutAndGet");
-                storage.tell(new PutMessage<>("key", "value"), Actor.noSender());
+                storage.tell(new PutMessage<>("key", "value"), ActorRef.noSender());
                 storage.tell(new GetMessage<>("key"), getRef());
                 expectMsgEquals(new EntryMessage<>("value"));
             }
@@ -46,7 +46,7 @@ public class StorageActorTest {
         new TestKit(system) {
             {
                 ActorRef storage = createStorageActor("testGetNotExists");
-                storage.tell(new PutMessage<>("key-a", "value"), Actor.noSender());
+                storage.tell(new PutMessage<>("key-a", "value"), ActorRef.noSender());
                 storage.tell(new GetMessage<>("key-b"), getRef());
                 expectMsgClass(KeyAbsentMessage.class);
             }
