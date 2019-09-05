@@ -53,6 +53,29 @@
             <artifactId>akka-split-brain-resolver_2.11</artifactId>
             <version>1.1.10</version>
         </dependency>
+
+        <!-- Use Coda Hale Metrics and Akka instrumentation -->
+        <dependency>
+            <groupId>com.lightbend.cinnamon</groupId>
+            <artifactId>cinnamon-chmetrics</artifactId>
+            <version>2.11.4</version>
+        </dependency>
+        <!-- Use Akka instrumentation -->
+        <dependency>
+            <groupId>com.lightbend.cinnamon</groupId>
+            <artifactId>cinnamon-akka_2.11</artifactId>
+            <version>2.11.4</version>
+        </dependency>
+        <dependency>
+            <groupId>com.lightbend.cinnamon</groupId>
+            <artifactId>cinnamon-prometheus</artifactId>
+            <version>2.11.4</version>
+        </dependency>
+        <dependency>
+            <groupId>com.lightbend.cinnamon</groupId>
+            <artifactId>cinnamon-prometheus-httpserver</artifactId>
+            <version>2.11.4</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -112,6 +135,47 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.1.1</version>
+                <executions>
+                    <execution>
+                        <id>copy</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>com.lightbend.cinnamon</groupId>
+                                    <artifactId>cinnamon-agent</artifactId>
+                                    <version>2.11.4</version>
+                                    <overWrite>true</overWrite>
+                                    <destFileName>cinnamon-agent.jar</destFileName>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.6.0</version>
+                <configuration>
+                    <executable>java</executable>
+                    <arguments>
+                        <argument>-classpath</argument>
+                        <classpath/>
+                        <argument>-javaagent:${project.build.directory}/dependency/cinnamon-agent.jar</argument>
+                    </arguments>
+                </configuration>
             </plugin>
         </plugins>
     </build>
